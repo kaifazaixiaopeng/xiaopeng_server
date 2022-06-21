@@ -1,8 +1,9 @@
-package com.xiaopeng.server.xiaopeng_server;
+package com.xiaopeng.server;
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.xiaopeng.server.xiaopeng_server.app.controller.CloneUtils;
-import com.xiaopeng.server.xiaopeng_server.app.controller.User;
+import com.xiaopeng.server.app.bean.SimpleDate;
+import com.xiaopeng.server.app.controller.CloneUtils;
+import com.xiaopeng.server.app.controller.User;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -68,4 +69,26 @@ class XiaopengServerApplicationTests {
         System.out.println(new Date().getTime());
     }
 
+    @Test
+    public void test20220610(){
+//        new Thread(){
+//            @Override
+//            public void run() {
+//                log.info(SimpleDate.getDefaultDate(new Date()));
+//            }
+//        }.start();
+//        new Thread(){
+//            @Override
+//            public void run() {
+//                log.info(SimpleDate.getDefaultDate(new Date()));
+//            }
+//        }.start();
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println(SimpleDate.getDefaultDate(new Date()));
+            }
+        }).start();
+        System.out.println(1111);
+    }
 }

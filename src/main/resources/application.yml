@@ -3,17 +3,18 @@ server:
   servlet:
     context-path: /aiops
 spring:
-  # \u6570\u636E\u6E90
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://124.221.225.23:3306/test?useUnicode=true&characterEncoding=utf8&useSSL=false
+    url: jdbc:mysql://124.221.225.23:3306/xiaopeng_server?useUnicode=true&characterEncoding=utf8&useSSL=false
     username: root
     password: root
-    hikari:
-      # \u6700\u5927\u8FDE\u63A5\u6570
-      maximum-pool-size: 50
-      # \u6700\u5C0F\u7A7A\u95F2\u8FDE\u63A5
-      minimum-idle: 10
+#    hikari:
+#      maximum-pool-size: 50
+#      minimum-idle: 10
 
   application:
-    name: "\u5C0F\u9E4F\u7684\u670D\u52A1"
+    name: "xiaopeng_server"
+# mybatis
+mybatis:
+  mapper-locations: classpath*:/mybatis/**/*Mapper.xml
+  configuration:

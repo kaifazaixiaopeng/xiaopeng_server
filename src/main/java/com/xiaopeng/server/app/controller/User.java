@@ -1,4 +1,4 @@
-package com.xiaopeng.server.xiaopeng_server.app.controller;
+package com.xiaopeng.server.app.controller;
 
 import lombok.Data;
 
