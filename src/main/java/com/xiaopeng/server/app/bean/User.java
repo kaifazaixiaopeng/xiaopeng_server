@@ -1,4 +1,4 @@
-package com.xiaopeng.server.app.controller;
+package com.xiaopeng.server.app.bean;
 
 import lombok.Data;
 
@@ -12,6 +12,6 @@ import java.io.Serializable;
  */
 @Data
 public class User implements Serializable {
-    private String name;
     private int id;
+    private String name;
 }

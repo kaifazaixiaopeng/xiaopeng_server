@@ -1,6 +1,9 @@
 package com.xiaopeng.server.app.dao;
 
 import com.xiaopeng.server.app.bean.MyBatisRepository;
+import com.xiaopeng.server.app.bean.User;
+
+import java.util.List;
 
 /**
  * @Auto:BUGPeng
@@ -10,5 +13,5 @@ import com.xiaopeng.server.app.bean.MyBatisRepository;
  */
 @MyBatisRepository
 public interface DemoMapper {
-     Object getAllData();
+     List<User> getAllData();
 }

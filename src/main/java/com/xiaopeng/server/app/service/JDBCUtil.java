@@ -54,7 +54,7 @@ public class JDBCUtil {
             System.out.println("正在打开数据库连接....");
 
             connection = DriverManager.getConnection(
-                    "jdbc:mysql://124.221.225.23:3306/xiaopeng_server?useUnicode=true&characterEncoding=utf8&useSSL=false",
+                    "jdbc:mysql://124.221.225.23:3306/test?useUnicode=true&characterEncoding=utf8&useSSL=false",
                     "root", "root"
             );
 

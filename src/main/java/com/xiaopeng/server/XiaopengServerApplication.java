@@ -7,6 +7,7 @@ import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -17,7 +18,8 @@ import java.net.UnknownHostException;
 @Slf4j
 @SpringBootApplication
 @EnableScheduling
-@MapperScan(basePackages = {"com.xiaopeng.server.app.dao"},annotationClass = MyBatisRepository.class)
+@Configuration
+@MapperScan(basePackages = {"com.xiaopeng.server.app.**"},annotationClass = MyBatisRepository.class)
 @EnableTransactionManagement
 public class XiaopengServerApplication {
 

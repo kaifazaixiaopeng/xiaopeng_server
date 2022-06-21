@@ -1,6 +1,8 @@
 package com.xiaopeng.server.app.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.xiaopeng.server.app.bean.ResultBean;
+import com.xiaopeng.server.app.bean.User;
 import com.xiaopeng.server.app.dao.DemoMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.*;
+import java.util.List;
 
 /**
  * @Auto:BUGPeng
@@ -20,7 +23,7 @@ import java.io.*;
 
 @Slf4j
 @RestController
-@RequestMapping("/api/v1/demo")
+@RequestMapping("/v1/demo")
 public class Demo {
     @Autowired
     private DemoMapper demoMapper;
@@ -34,6 +37,10 @@ public class Demo {
     public File getCSVFile() {
         File file = new File("test.txt");
         return file;
+    }
+    @GetMapping("/getAllData")
+    public List<User> getAllData(){
+        return demoMapper.getAllData();
     }
 }
 
