@@ -14,7 +14,7 @@ spring:
 
   application:
     name: "xiaopeng_server"
-# mybatis
-mybatis:
-  mapper-locations: classpath*:/mybatis/**/*Mapper.xml
-  configuration:
+## mybatis
+#mybatis:
+#  mapper-locations: classpath*:/mybatis/**/*Mapper.xml
+#  configuration:
