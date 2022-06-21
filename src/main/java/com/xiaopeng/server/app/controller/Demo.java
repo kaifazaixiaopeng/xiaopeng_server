@@ -1,9 +1,8 @@
 package com.xiaopeng.server.app.controller;
 
-import com.alibaba.fastjson.JSONObject;
 import com.xiaopeng.server.app.bean.ResultBean;
 import com.xiaopeng.server.app.bean.User;
-import com.xiaopeng.server.app.dao.DemoMapper;
+import com.xiaopeng.server.app.Mapper.DemoMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
@@ -27,6 +26,7 @@ import java.util.List;
 public class Demo {
     @Autowired
     private DemoMapper demoMapper;
+
     @GetMapping("/hellowWord")
     public ResultBean testxiaopeng(Model model) {
         model.addAttribute("hi", "小鹏主机的第一个程序!");

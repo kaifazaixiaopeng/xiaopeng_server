@@ -5,7 +5,7 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://124.221.225.23:3306/xiaopeng_server?useUnicode=true&characterEncoding=utf8&useSSL=false
+    url: jdbc:mysql://124.221.225.23:3306/test?useUnicode=true&characterEncoding=utf8&useSSL=false
     username: root
     password: root
 #    hikari:
@@ -18,6 +18,6 @@ spring:
 ##实现mapper接口配置见mapper和接口的绑定路径
 ##将带有下划线的表字段映射为驼峰格式的实体类属性
 mybatis:
-  mapper-locations: classpath*:/mybatis/**/*.xml
+  mapper-locations: classpath*:/mybatis/*.xml
   configuration:
     map-underscore-to-camel-case: true
