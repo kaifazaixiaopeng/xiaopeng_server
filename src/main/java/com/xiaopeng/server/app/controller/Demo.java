@@ -2,7 +2,7 @@ package com.xiaopeng.server.app.controller;
 
 import com.xiaopeng.server.app.bean.ResultBean;
 import com.xiaopeng.server.app.bean.User;
-import com.xiaopeng.server.app.Mapper.DemoMapper;
+import com.xiaopeng.server.app.mapper.DemoMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;

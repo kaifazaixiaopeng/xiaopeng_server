@@ -19,7 +19,7 @@ import java.net.UnknownHostException;
 @SpringBootApplication
 @EnableScheduling
 @Configuration
-@MapperScan(basePackages = {"com.xiaopeng.server.app.dao"},annotationClass = MyBatisRepository.class)
+@MapperScan(basePackages = {"com.xiaopeng.server.app.mapper"},annotationClass = MyBatisRepository.class)
 @EnableTransactionManagement
 public class XiaopengServerApplication {
 

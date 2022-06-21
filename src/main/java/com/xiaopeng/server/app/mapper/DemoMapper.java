@@ -1,4 +1,4 @@
-package com.xiaopeng.server.app.Mapper;
+package com.xiaopeng.server.app.mapper;
 
 import com.xiaopeng.server.app.bean.MyBatisRepository;
 import com.xiaopeng.server.app.bean.User;
