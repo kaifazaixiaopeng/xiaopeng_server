@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.util.List;
 
@@ -42,7 +44,36 @@ public class Demo {
     public List<User> getAllData(){
         return demoMapper.getAllData();
     }
+
+
+    @GetMapping("/touduyu")
+    public ResultBean<String> redire(HttpServletRequest request, HttpServletResponse response){
+        try{
+                response.sendRedirect("https://touduyu.com/");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        return new ResultBean<>(ResultBean.SUCCESS,"success");
+    }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
