@@ -4,6 +4,7 @@ import com.jcraft.jsch.ChannelSftp;
 import com.xiaopeng.server.app.bean.common.ResultBean;
 import com.xiaopeng.server.app.bean.pojo.User;
 import com.xiaopeng.server.app.bean.utils.FtpUtils;
+import com.xiaopeng.server.app.bean.utils.I18nUtil;
 import com.xiaopeng.server.app.mapper.DemoMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @Auto:BUGPeng
@@ -30,6 +33,8 @@ import java.util.List;
 public class DemoController {
     @Autowired
     private DemoMapper demoMapper;
+    @Autowired
+    private I18nUtil i18nUtil;
 
     @GetMapping("/hellowWord")
     public ResultBean testxiaopeng(Model model) {
@@ -77,6 +82,20 @@ public class DemoController {
             e.printStackTrace();
         }
         return strings;
+    }
+
+    /**
+     * 通过获取Locale处理中英文转换
+     */
+    @GetMapping("/I18")
+    public  List<String> getI18(){
+        List<String> booleans = new ArrayList<>();
+        /**
+         * Locale包含多地区枚举，i18nUtil.getLocale()获取本地地区转换为枚举值比较
+         */
+        booleans.add(i18nUtil.getLocale()== Locale.SIMPLIFIED_CHINESE?"成功":"SUCCESS");
+        booleans.add(i18nUtil.getLocale()== Locale.US?"SUCCESS":"成功");
+        return booleans;
     }
 }
 

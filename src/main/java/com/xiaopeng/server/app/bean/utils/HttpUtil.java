@@ -25,7 +25,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * http请求工具类
+ * @Auto:BUGPeng
+ * @Date:2022/5/26 14::23
+ * @ClassName:JDBCRunSqlTest
+ * @Remark:  http请求工具类
  */
 @Slf4j
 @Component
