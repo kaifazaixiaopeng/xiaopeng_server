@@ -1,4 +1,4 @@
-package com.xiaopeng.server.app.bean;
+package com.xiaopeng.server.app.bean.annotation;
 
 import org.springframework.stereotype.Component;
 

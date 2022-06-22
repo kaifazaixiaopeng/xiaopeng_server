@@ -1,7 +1,7 @@
 package com.xiaopeng.server.app.controller;
 
-import com.xiaopeng.server.app.bean.ResultBean;
-import com.xiaopeng.server.app.bean.User;
+import com.xiaopeng.server.app.bean.common.ResultBean;
+import com.xiaopeng.server.app.bean.pojo.User;
 import com.xiaopeng.server.app.mapper.DemoMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +46,7 @@ public class Demo {
     }
 
 
-    @GetMapping("/touduyu")
+        @GetMapping("/touduyu")
     public ResultBean<String> redire(HttpServletRequest request, HttpServletResponse response){
         try{
                 response.sendRedirect("https://touduyu.com/");

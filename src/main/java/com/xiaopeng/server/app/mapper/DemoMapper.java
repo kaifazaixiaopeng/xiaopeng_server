@@ -1,7 +1,7 @@
 package com.xiaopeng.server.app.mapper;
 
-import com.xiaopeng.server.app.bean.MyBatisRepository;
-import com.xiaopeng.server.app.bean.User;
+import com.xiaopeng.server.app.bean.annotation.MyBatisRepository;
+import com.xiaopeng.server.app.bean.pojo.User;
 
 import java.util.List;
 
@@ -12,6 +12,7 @@ import java.util.List;
  * @Remark:
  */
 @MyBatisRepository
+//@RespectBinding
 public interface DemoMapper {
      List<User> getAllData();
 }

@@ -1,6 +1,6 @@
 package com.xiaopeng.server;
 
-import com.xiaopeng.server.app.bean.MyBatisRepository;
+import com.xiaopeng.server.app.bean.annotation.MyBatisRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.Banner;

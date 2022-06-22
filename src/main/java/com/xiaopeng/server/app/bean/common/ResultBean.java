@@ -1,4 +1,4 @@
-package com.xiaopeng.server.app.bean;
+package com.xiaopeng.server.app.bean.common;
 
 import lombok.Data;
 
