@@ -1,4 +1,4 @@
-package com.xiaopeng.server.app.service;
+package com.xiaopeng.server.app.bean.utils;
 
 import java.sql.DriverManager;
 import java.sql.SQLException;

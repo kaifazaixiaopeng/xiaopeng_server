@@ -2,7 +2,7 @@ package com.xiaopeng.server;
 
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.xiaopeng.server.app.bean.common.SimpleDate;
-import com.xiaopeng.server.app.controller.CloneUtils;
+import com.xiaopeng.server.app.bean.utils.CloneUtils;
 import com.xiaopeng.server.app.bean.pojo.User;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;

@@ -1,7 +1,9 @@
 package com.xiaopeng.server.app.controller;
 
+import com.jcraft.jsch.ChannelSftp;
 import com.xiaopeng.server.app.bean.common.ResultBean;
 import com.xiaopeng.server.app.bean.pojo.User;
+import com.xiaopeng.server.app.bean.utils.FtpUtils;
 import com.xiaopeng.server.app.mapper.DemoMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +27,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequestMapping("/v1/demo")
-public class Demo {
+public class DemoController {
     @Autowired
     private DemoMapper demoMapper;
 
@@ -40,20 +42,41 @@ public class Demo {
         File file = new File("test.txt");
         return file;
     }
+
     @GetMapping("/getAllData")
-    public List<User> getAllData(){
+    public List<User> getAllData() {
         return demoMapper.getAllData();
     }
 
 
-        @GetMapping("/touduyu")
-    public ResultBean<String> redire(HttpServletRequest request, HttpServletResponse response){
-        try{
-                response.sendRedirect("https://touduyu.com/");
+    @GetMapping("/touduyu")
+    public ResultBean<String> redire(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            response.sendRedirect("https://touduyu.com/");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ResultBean<>(ResultBean.SUCCESS, "success");
+    }
+
+    /**
+     *ssh连接服务器
+     * @param response
+     * @param request
+     * @return
+     */
+    @GetMapping("/connectionBySsh")
+    public List<String> connectionBySsh(HttpServletResponse response, HttpServletRequest request) {
+        FtpUtils ftpUtils = new FtpUtils();
+//        ChannelSftp channel = ftpUtils.connect("124.221.225.23", 22, "root", "wzp@java666");
+//        ftpUtils.disConnect(channel);
+        List<String> strings=null;
+        try {
+            strings = ftpUtils.listFiles("/", "124.221.225.23", 22, "root", "wzp@java666");
         }catch (Exception e){
             e.printStackTrace();
         }
-        return new ResultBean<>(ResultBean.SUCCESS,"success");
+        return strings;
     }
 }
 

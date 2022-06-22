@@ -1,4 +1,4 @@
-package com.xiaopeng.server.app.controller;
+package com.xiaopeng.server.app.bean.utils;
 
 import org.omg.IOP.Encoding;
 
