@@ -16,9 +16,8 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * @Auto:BUGPeng
@@ -87,7 +86,7 @@ public class DemoController {
     /**
      * 通过获取Locale处理中英文转换
      */
-    @GetMapping("/I18")
+    @GetMapping("/I18n")
     public  List<String> getI18(){
         List<String> booleans = new ArrayList<>();
         /**
@@ -96,6 +95,17 @@ public class DemoController {
         booleans.add(i18nUtil.getLocale()== Locale.SIMPLIFIED_CHINESE?"成功":"SUCCESS");
         booleans.add(i18nUtil.getLocale()== Locale.US?"SUCCESS":"成功");
         return booleans;
+    }
+    @GetMapping("/timeDemo")
+    public Map<String, String> getTime(){
+        Calendar cale = Calendar.getInstance();;
+        cale.add(Calendar.MONTH, -1);
+        String startTime = new SimpleDateFormat("yyyy-MM-dd").format(cale.getTime());
+        String endTime = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+        Map<String, String> map = new HashMap<>();
+        map.put("startTime",startTime);
+        map.put("endTime",endTime);
+        return map;
     }
 }
 
