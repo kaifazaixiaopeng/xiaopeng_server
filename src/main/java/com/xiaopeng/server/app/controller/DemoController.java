@@ -48,7 +48,7 @@ public class DemoController {
     }
 
     @GetMapping("/getAllData")
-    public List<User> getAllData() {
+    public List<Map<String,Object>> getAllData() {
         return demoMapper.getAllData();
     }
 

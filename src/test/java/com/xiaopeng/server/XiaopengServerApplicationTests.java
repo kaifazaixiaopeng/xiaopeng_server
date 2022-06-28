@@ -1,5 +1,6 @@
 package com.xiaopeng.server;
 
+import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.xiaopeng.server.app.bean.common.SimpleDate;
 import com.xiaopeng.server.app.bean.utils.CloneUtils;
@@ -9,9 +10,11 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -90,5 +93,60 @@ class XiaopengServerApplicationTests {
             }
         }).start();
         System.out.println(1111);
+    }
+    /**
+     *
+     * 按照指定对象的字段排序(正序)
+     *
+     * @param list
+     * @param param 排序字段
+     * @param <T>
+     * @throws IntrospectionException
+     */
+    public static final <T> void ObjSort(List<T> list , String param) throws IntrospectionException {
+        Collections.sort(list, new Comparator<T>() {
+            @Override
+            public int compare(T o1, T o2) {
+                Class<?> type = o1.getClass();
+                PropertyDescriptor descriptor1 = null;
+                try {
+                    descriptor1 = new PropertyDescriptor( param, type );
+                    Method readMethod1 = descriptor1.getReadMethod();
+
+                    PropertyDescriptor descriptor2 = new PropertyDescriptor( param, type );
+                    Method readMethod2 = descriptor2.getReadMethod();
+                    return readMethod1.invoke(o1).toString().compareTo(readMethod2.invoke(o2).toString());
+                } catch (IntrospectionException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                } catch (InvocationTargetException e) {
+                    e.printStackTrace();
+                }
+                return -1;
+            }
+        });
+    }
+    @Test
+    public void getSort(){
+        ArrayList<User> users = new ArrayList<>();
+        User user = new User();
+        user.setId(1);
+        user.setName("xiaopeng");
+        User user1 = new User();
+        user1.setId(2);
+        user1.setName("小明");
+        User user2= new User();
+        user2.setId(3);
+        user2.setName("小刘");
+        users.add(user1);
+        users.add(user);
+        users.add(user2);
+        try {
+            ObjSort(users, "id");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        System.out.println(JSONObject.toJSONString(users));
     }
 }

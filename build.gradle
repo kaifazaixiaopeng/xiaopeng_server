@@ -34,6 +34,9 @@ dependencies {
     implementation group: 'com.jcraft', name: 'jsch', version: '0.1.54'
     //hutool
     implementation  'cn.hutool:hutool-all:4.6.11'
+    // https://mvnrepository.com/artifact/org.junit.platform/junit-platform-launcher
+    testImplementation group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.8.2'
+
 }
 
 tasks.named('test') {

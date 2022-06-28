@@ -4,6 +4,7 @@ import com.xiaopeng.server.app.bean.annotation.MyBatisRepository;
 import com.xiaopeng.server.app.bean.pojo.User;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @Auto:BUGPeng
@@ -14,5 +15,5 @@ import java.util.List;
 @MyBatisRepository
 //@RespectBinding
 public interface DemoMapper {
-     List<User> getAllData();
+     List<Map<String,Object>> getAllData();
 }
