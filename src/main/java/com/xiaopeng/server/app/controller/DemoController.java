@@ -1,8 +1,6 @@
 package com.xiaopeng.server.app.controller;
 
-import com.jcraft.jsch.ChannelSftp;
 import com.xiaopeng.server.app.bean.common.ResultBean;
-import com.xiaopeng.server.app.bean.pojo.User;
 import com.xiaopeng.server.app.bean.utils.FtpUtils;
 import com.xiaopeng.server.app.bean.utils.I18nUtil;
 import com.xiaopeng.server.app.mapper.DemoMapper;
@@ -15,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -48,7 +46,7 @@ public class DemoController {
     }
 
     @GetMapping("/getAllData")
-    public List<Map<String,Object>> getAllData() {
+    public List<Map<String, Object>> getAllData() {
         return demoMapper.getAllData();
     }
 
@@ -64,7 +62,8 @@ public class DemoController {
     }
 
     /**
-     *ssh连接服务器
+     * ssh连接服务器
+     *
      * @param response
      * @param request
      * @return
@@ -74,10 +73,10 @@ public class DemoController {
         FtpUtils ftpUtils = new FtpUtils();
 //        ChannelSftp channel = ftpUtils.connect("124.221.225.23", 22, "root", "wzp@java666");
 //        ftpUtils.disConnect(channel);
-        List<String> strings=null;
+        List<String> strings = null;
         try {
             strings = ftpUtils.listFiles("/", "124.221.225.23", 22, "root", "wzp@java666");
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return strings;
@@ -87,26 +86,35 @@ public class DemoController {
      * 通过获取Locale处理中英文转换
      */
     @GetMapping("/I18n")
-    public  List<String> getI18(){
+    public List<String> getI18() {
         List<String> booleans = new ArrayList<>();
         /**
          * Locale包含多地区枚举，i18nUtil.getLocale()获取本地地区转换为枚举值比较
          */
-        booleans.add(i18nUtil.getLocale()== Locale.SIMPLIFIED_CHINESE?"成功":"SUCCESS");
-        booleans.add(i18nUtil.getLocale()== Locale.US?"SUCCESS":"成功");
+        booleans.add(i18nUtil.getLocale() == Locale.SIMPLIFIED_CHINESE ? "成功" : "SUCCESS");
+        booleans.add(i18nUtil.getLocale() == Locale.US ? "SUCCESS" : "成功");
         return booleans;
     }
+
     @GetMapping("/timeDemo")
-    public Map<String, String> getTime(){
-        Calendar cale = Calendar.getInstance();;
+    public Map<String, String> getTime() {
+        Calendar cale = Calendar.getInstance();
+        ;
         cale.add(Calendar.MONTH, -1);
         String startTime = new SimpleDateFormat("yyyy-MM-dd").format(cale.getTime());
         String endTime = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
         Map<String, String> map = new HashMap<>();
-        map.put("startTime",startTime);
-        map.put("endTime",endTime);
+        map.put("startTime", startTime);
+        map.put("endTime", endTime);
         return map;
     }
+
+
+//    @GetMapping("/pageList")
+//    public List getFlowConfigs(@RequestParam("page") int page, @RequestParam("size") int size) {
+//        return demoMapper.getAllData();
+//    }
+
 }
 
 

@@ -149,4 +149,34 @@ class XiaopengServerApplicationTests {
         }
         System.out.println(JSONObject.toJSONString(users));
     }
+    private volatile List<Integer> list = new ArrayList<>();
+    @Test
+    public void volatileTest(){
+
+            new Thread() {
+                @Override
+                public void run() {
+                    for (int i = 0; i < 10; i++) {
+                        list.add(1);
+                    }
+                }
+            }.start();
+            new Thread() {
+                @Override
+                public void run() {
+                    for (int i = 0; i < 10; i++) {
+                        list.add(2);
+                    }
+                }
+            }.start();
+            new Thread() {
+                @Override
+                public void run() {
+                    for (int i = 0; i < 10; i++) {
+                        list.add(3);
+                    }
+                }
+            }.start();
+        System.out.println(JSONObject.toJSONString(list));
+    }
 }
