@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -99,7 +100,6 @@ public class DemoController {
     @GetMapping("/timeDemo")
     public Map<String, String> getTime() {
         Calendar cale = Calendar.getInstance();
-        ;
         cale.add(Calendar.MONTH, -1);
         String startTime = new SimpleDateFormat("yyyy-MM-dd").format(cale.getTime());
         String endTime = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
@@ -108,12 +108,49 @@ public class DemoController {
         map.put("endTime", endTime);
         return map;
     }
-
-
+    @PostMapping("/resumeFile")
+    public void getResumeFile(HttpServletRequest request,HttpServletResponse response){
+        try {
+            response.setContentType("application/pdf");
+            //获取文件
+            FileInputStream in = new FileInputStream(new File("resources/tmp/简历.pdf"));
+            OutputStream out = response.getOutputStream();
+            byte[] b = new byte[1024];
+            while ((in.read(b)) != -1) {
+                out.write(b);
+            }
+            out.flush();
+        }catch (Exception e){
+            e.printStackTrace();
+        }finally {
+            in.close();
+            out.close();
+        }
+    }
 //    @GetMapping("/pageList")
 //    public List getFlowConfigs(@RequestParam("page") int page, @RequestParam("size") int size) {
 //        return demoMapper.getAllData();
 //    }
+
+    public static void main(String[] args) {
+        try {
+            method(null);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void method(String num) {
+        switch (num) {
+            case "th":
+                System.out.println("th");
+            case "null":
+                System.out.println("null");
+            default:
+                System.out.println("default");
+        }
+    }
+
 
 }
 

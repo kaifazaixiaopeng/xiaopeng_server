@@ -43,6 +43,7 @@ public class FtpUtils {
             log.info("Session connected ...");
             log.info("Opening Channel ...");
             Channel channel = sshSession.openChannel("sftp");
+            //设置连接超时时间，有的服务器登陆比较慢，这里需重新设置时间长一点
             channel.connect(120000);
             sftp = (ChannelSftp) channel;
             log.info("登录成功");
