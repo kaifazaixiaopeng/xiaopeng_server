@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -110,11 +113,13 @@ public class DemoController {
     }
     @PostMapping("/resumeFile")
     public void getResumeFile(HttpServletRequest request,HttpServletResponse response){
+        FileInputStream in = null;
+        OutputStream out=null;
         try {
             response.setContentType("application/pdf");
             //获取文件
-            FileInputStream in = new FileInputStream(new File("resources/tmp/简历.pdf"));
-            OutputStream out = response.getOutputStream();
+             in = new FileInputStream(new File("resources/tmp/简历.pdf"));
+            out= response.getOutputStream();
             byte[] b = new byte[1024];
             while ((in.read(b)) != -1) {
                 out.write(b);
@@ -123,8 +128,13 @@ public class DemoController {
         }catch (Exception e){
             e.printStackTrace();
         }finally {
-            in.close();
-            out.close();
+            try {
+                in.close();
+                out.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
         }
     }
 //    @GetMapping("/pageList")
