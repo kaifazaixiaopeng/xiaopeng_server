@@ -8,6 +8,7 @@ spring:
     url: jdbc:mysql://124.221.225.23:3306/test?useUnicode=true&characterEncoding=utf8&useSSL=false
     username: root
     password: root
+    flag:
 #    hikari:
 #      maximum-pool-size: 50
 #      minimum-idle: 10

@@ -7,32 +7,34 @@ package com.xiaopeng.server.app.controller;
  * @Remark:
  */
 public enum MyEnum {
-    USER(1,"小鹏");
-    private int id;
+    USER_3("psn_1","小烁"),
+    USER_2("psn_2","小柚"),
+    USER_1("psn_3","小鹏");
+    private String code;
     private String name;
     /**
      * 按照code获得枚举值
      */
-    public static MyEnum valueOf(Integer id) {
-        if (id != null) {
+    public static MyEnum getFromCode(String code) {
+        if (code != null) {
             for (MyEnum fsEnum : MyEnum.values()) {
-                if (fsEnum.getId() == id) {
+                if (fsEnum.getCode() .equals( code)) {
                     return fsEnum;
                 }
             }
         }
         return null;
     }
-    public int getId() {
-        return id;
+    public String getCode() {
+        return code;
     }
 
     public String getName() {
         return name;
     }
 
-    MyEnum(int id, String name) {
-        this.id = id;
+    MyEnum(String code, String name) {
+        this.code = code;
         this.name = name;
     }
 }

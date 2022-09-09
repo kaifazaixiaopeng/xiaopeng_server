@@ -10,6 +10,13 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Vector;
 
+/**
+ * @Auto:BUGPeng
+ * @Date:2022/4/2816:48
+ * @ClassName:Demo
+ * @Remark:
+ */
+
 @Slf4j
 public class FtpUtils {
     //指定重试的次数
@@ -17,14 +24,15 @@ public class FtpUtils {
     //重试次数
     private long count1 = 0;
     //重试间隔时间
-    private long sleepTime=6000;
+    private long sleepTime = 6000;
 
     /**
      * 连接sftp远程服务器
-     * @param ftpHost    ip
-     * @param ftpPort    端口
-     * @param ftpUserName  用户名
-     * @param ftpPassword   密码
+     *
+     * @param ftpHost     ip
+     * @param ftpPort     端口
+     * @param ftpUserName 用户名
+     * @param ftpPassword 密码
      * @return
      */
     public ChannelSftp connect(String ftpHost, int ftpPort, String ftpUserName, String ftpPassword) {
@@ -55,14 +63,13 @@ public class FtpUtils {
                 }
                 Thread.sleep(sleepTime);
                 log.info("retry Session connected....");
-                connect(ftpHost,ftpPort,ftpUserName,ftpPassword);
+                connect(ftpHost, ftpPort, ftpUserName, ftpPassword);
             } catch (InterruptedException e1) {
                 throw new RuntimeException(e1);
             }
         }
         return sftp;
     }
-
 
 
     /**
@@ -100,8 +107,10 @@ public class FtpUtils {
     public FtpUtils() {
 
     }
+
     /**
      * 进入指定文件夹拿到所有文件名称
+     *
      * @param directory
      * @param ftpHost
      * @param ftpPort
@@ -110,8 +119,8 @@ public class FtpUtils {
      * @return
      * @throws SftpException
      */
-    public List<String> listFiles(String directory,String ftpHost, int ftpPort, String ftpUserName, String ftpPassword) throws SftpException {
-        ChannelSftp sftp = connect(ftpHost,ftpPort,ftpUserName,ftpPassword);
+    public List<String> listFiles(String directory, String ftpHost, int ftpPort, String ftpUserName, String ftpPassword) throws SftpException {
+        ChannelSftp sftp = connect(ftpHost, ftpPort, ftpUserName, ftpPassword);
         List fileNameList = new ArrayList();
         try {
             sftp.cd(directory);
