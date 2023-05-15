@@ -46,11 +46,11 @@ public class TimedTesk {
         logMapper.insert(endLog);
     }
 
-    @Scheduled(fixedDelay = 1000)
-    private void testTasks() {
-        String now = DateUtil.now();
-        log.info(now);
-    }
+//    @Scheduled(fixedDelay = 1000)
+//    private void testTasks() {
+//        String now = DateUtil.now();
+//        log.info(now);
+//    }
 
     public String getWeather() {
         StringBuilder msg = new StringBuilder();

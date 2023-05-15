@@ -14,12 +14,12 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 /**
  * 设置默认页面
  */
-@Configuration
-public class DefaultView extends WebMvcConfigurerAdapter {
-    @Override
-    public void addViewControllers(ViewControllerRegistry registry) {
-        registry.addViewController("/").setViewName("aixin");
-        registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
-        super.addViewControllers(registry);
-    }
-}
+//@Configuration
+//public class DefaultView extends WebMvcConfigurerAdapter {
+//    @Override
+//    public void addViewControllers(ViewControllerRegistry registry) {
+//        registry.addViewController("/").setViewName("aixin");
+//        registry.setOrder(Ordered.HIGHEST_PRECEDENCE);
+//        super.addViewControllers(registry);
+//    }
+//}
