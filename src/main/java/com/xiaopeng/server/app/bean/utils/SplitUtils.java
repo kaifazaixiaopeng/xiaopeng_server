@@ -1,0 +1,74 @@
+package com.xiaopeng.server.app.bean.utils;
+
+
+
+import org.thymeleaf.util.StringUtils;
+
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * @Auto:BUGPeng
+ * @Date:2022/9/19 17:42
+ * @ClassName:SplitUtils
+ * @Remark:  自定义split工具 性能优，原生的split方法使用正则表达式，正则表达式的效率是比较低的
+ */
+public class SplitUtils {
+        /**
+         * 自定义分割函数，返回第一个
+         *
+         * @param str   待分割的字符串
+         * @param delim 分隔符
+         * @return 分割后的第一个字符串
+         */
+        public static String splitFirst(final String str, final String delim) {
+            if (null == str || StringUtils.isEmpty(delim)) {
+                return str;
+            }
+
+            int index = str.indexOf(delim);
+            if (index < 0) {
+                return str;
+            }
+            if (index == 0) {
+                // 一开始就是分隔符，返回空串
+                return "";
+            }
+
+            return str.substring(0, index);
+        }
+
+        /**
+         * 自定义分割函数，返回全部
+         *
+         * @param str   待分割的字符串
+         * @param delim 分隔符
+         * @return 分割后的返回结果
+         */
+        public static List<String> split(String str, final String delim) {
+            if (null == str) {
+                return new ArrayList<>(0);
+            }
+
+            if (StringUtils.isEmpty(delim)) {
+                List<String> result = new ArrayList<>(1);
+                result.add(str);
+
+                return result;
+            }
+
+            final List<String> stringList = new ArrayList<>();
+            while (true) {
+                int index = str.indexOf(delim);
+                if (index < 0) {
+                    stringList.add(str);
+                    break;
+                }
+                stringList.add(str.substring(0, index));
+                str = str.substring(index + delim.length());
+            }
+            return stringList;
+        }
+
+    }
+

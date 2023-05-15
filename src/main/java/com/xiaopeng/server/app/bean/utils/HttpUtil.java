@@ -1,5 +1,6 @@
 package com.xiaopeng.server.app.bean.utils;
 
+import com.alibaba.fastjson.JSONObject;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -76,6 +77,46 @@ public class HttpUtil {
             }
         }
         return resultMap;
+    }
+
+    /**
+     * 通用，http get请求
+     * @param url
+     * @return
+     */
+    public JSONObject reqByGet(String url) {
+        JSONObject jsonObject = new JSONObject();
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        CloseableHttpResponse response = null;
+        String resultString = "";
+        try {
+            log.info("========= 请求地址：{} ==========", url);
+            HttpGet httpGet = new HttpGet(url);
+            httpGet.setHeader("Content-Type", "application/json");
+            response = httpclient.execute(httpGet);
+            if (response.getEntity() != null) {
+                resultString = EntityUtils.toString(response.getEntity(), "UTF-8");
+//                resultMap.put("responseEntity", resultString);
+//                resultMap.put("responseEntityGB2312", EntityUtils.toString(response.getEntity(), "GB2312"));
+            }
+            jsonObject.put("CODE", 200);
+            jsonObject.put("MSG", resultString);
+        } catch (Exception e) {
+            log.error("===》HttpUtil.get方法执行出错，url：{}，信息：{}", url, e.toString());
+            jsonObject.put("CODE", 500);
+            jsonObject.put("MSG", e.toString());
+            jsonObject.put("responseEntity", "");
+        } finally {
+            try {
+                if (response != null) {
+                    response.close();
+                }
+                httpclient.close();
+            } catch (IOException e) {
+                log.error("===》HttpUtil.get方法关闭出错，url：{}，信息：{}", url, e.toString());
+            }
+        }
+        return jsonObject;
     }
 
     /**
