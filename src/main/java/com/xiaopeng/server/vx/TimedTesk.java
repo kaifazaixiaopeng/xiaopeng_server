@@ -2,7 +2,6 @@ package com.xiaopeng.server.vx;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaopeng.server.app.bean.utils.HttpUtil;
@@ -11,10 +10,7 @@ import com.xiaopeng.server.vx.mapper.LogMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.annotation.Scheduled;
-
-import java.util.Map;
 
 /**
  * @ClassName: TimedTesk
@@ -27,7 +23,7 @@ import java.util.Map;
 public class TimedTesk {
 
     @Autowired
-    LogMapper logMapper;
+    private LogMapper logMapper;
     private final String key = "e8155303fe134b5ca279eb049cf03138";
 
     @Autowired
@@ -50,11 +46,11 @@ public class TimedTesk {
         logMapper.insert(endLog);
     }
 
-//    @Scheduled(fixedDelay = 1000)
-//    private void testTasks() {
-//        String now = DateUtil.now();
-//        System.out.println(now);
-//    }
+    @Scheduled(fixedDelay = 1000)
+    private void testTasks() {
+        String now = DateUtil.now();
+        log.info(now);
+    }
 
     public String getWeather() {
         StringBuilder msg = new StringBuilder();
@@ -62,10 +58,10 @@ public class TimedTesk {
             //https://geoapi.qweather.com/v2/city/lookup?location=beij&key=YOUR_KEY
             JSONObject city = httpUtil.reqByGet("https://geoapi.qweather.com/v2/city/lookup?location=jiujiang&key=" + key);
             if (ObjectUtil.isEmpty(city)) {
+                LogEntity errorLog = new LogEntity();
+                errorLog.setContent("获取城市信息失败");
                 log.info("获取城市信息失败");
-            }
-            if (city.getInteger("CODE") != 200) {
-                log.info("获取城市信息失败");
+                logMapper.insert(errorLog);
             }
             JSONObject data = JSONObject.parseObject(city.getString("MSG"));
             JSONArray location = data.getJSONArray("location");
@@ -74,6 +70,12 @@ public class TimedTesk {
             //https://api.qweather.com/v7/weather/3d?location=101010100&key=YOUR_KEY
             String url = "https://devapi.qweather.com/v7/weather/3d?location=" + id + "&key=" + key;
             JSONObject res = httpUtil.reqByGet(url);
+            if(ObjectUtil.isEmpty(res)){
+                LogEntity errorLog = new LogEntity();
+                errorLog.setContent("获取天气信息异常");
+                log.info("获取天气信息异常");
+                logMapper.insert(errorLog);
+            }
             msg.append(res.getString("MSG"));
             msg.toString().replaceAll("\\\\", "");
             log.info(msg.toString());
