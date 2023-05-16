@@ -21,4 +21,6 @@ public class LogEntity {
     @TableField("content")
     private String content;
 
+    @TableField("is_success")
+    private Integer isSuccess=1;
 }
