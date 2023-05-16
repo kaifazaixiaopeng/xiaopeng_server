@@ -101,7 +101,9 @@ public class TimedTesk {
                     //最小气温
                     weatherEntity.setTempMin(day.getString("tempMin"));
                     //天气：多云
-                    weatherEntity.setTextDay(day.getString("textDay"));
+                    String textDay = day.getString("textDay");
+                    String textNight = day.getString("textNight");
+                    weatherEntity.setTextDay(textDay+"转"+textNight);
                     //风向
                     weatherEntity.setWindDirDay(day.getString("windDirDay"));
                     //风速
