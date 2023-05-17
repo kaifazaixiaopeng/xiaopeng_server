@@ -62,6 +62,7 @@ public class TimedTesk {
     public void myTasks() {
         LogEntity startLog = new LogEntity();
         startLog.setContent("每日定时任务开启");
+        startLog.setCreateTime(new Date());
         logService.save(startLog);
         log.info("每日定时任务开启");
         String access_token = redis.opsForValue().get("access_token");
@@ -77,6 +78,7 @@ public class TimedTesk {
         String content = getContent(entity);
         sendTextMsg(access_token, content);
         LogEntity endLog = new LogEntity();
+        endLog.setCreateTime(new Date());
         endLog.setContent("每日定时任务结束");
         log.info("每日定时任务结束");
         logService.save(endLog);
@@ -89,7 +91,7 @@ public class TimedTesk {
         String s="温馨提醒,今天是"+entity.getFxDate()+",天气"+entity.getTextDay()+","+entity.getWindDirDay()+",风速"+entity.getWindSpeedDay()+",最高气温"+entity.getTempMax()
                 +"℃,最低气温"+entity.getTempMin()+"℃";
         if(entity.getTextDay().contains("雨")){
-            s=s+",请戴好雨具";
+            s=s+",请带好雨具";
         }
         return s;
     }
@@ -125,6 +127,7 @@ public class TimedTesk {
     private void weatherTask() {
         LogEntity logEntity = new LogEntity();
         logEntity.setContent("天气定时任务开始");
+        logEntity.setCreateTime(new Date());
         log.info("天气定时任务开始");
         logService.save(logEntity);
         try {
@@ -185,6 +188,7 @@ public class TimedTesk {
             }
             LogEntity logEntity1 = new LogEntity();
             logEntity1.setContent("天气定时任务结束");
+            logEntity1.setCreateTime(new Date());
             log.info("天气定时任务结束");
             logService.save(logEntity1);
             log.info(weather);
@@ -192,6 +196,7 @@ public class TimedTesk {
             LogEntity logEntity1 = new LogEntity();
             logEntity1.setContent("天气定时任务异常结束");
             logEntity1.setIsSuccess(2);
+            logEntity1.setCreateTime(new Date());
             log.info("天气定时任务异常结束");
             logService.save(logEntity1);
         }
@@ -209,6 +214,7 @@ public class TimedTesk {
         JSONObject city = httpUtil.reqByGet("https://geoapi.qweather.com/v2/city/lookup?location=jiujiang&key=" + key);
         if (ObjectUtil.isEmpty(city)) {
             LogEntity errorLog = new LogEntity();
+            errorLog.setCreateTime(new Date());
             errorLog.setContent("获取城市信息失败");
             log.info("获取城市信息失败");
             logService.save(errorLog);
@@ -232,6 +238,7 @@ public class TimedTesk {
         JSONObject res = httpUtil.reqByGet(url);
         if (ObjectUtil.isEmpty(res)) {
             LogEntity errorLog = new LogEntity();
+            errorLog.setCreateTime(new Date());
             errorLog.setContent("获取天气信息异常");
             log.info("获取天气信息异常");
             logService.save(errorLog);

@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.util.Date;
+
 /**
  * @ClassName: LogEntity
  * @Author: BUG-WZP
@@ -20,6 +22,9 @@ public class LogEntity {
 
     @TableField("content")
     private String content;
+
+    @TableField("create_time")
+    private Date createTime;
 
     @TableField("is_success")
     private Integer isSuccess=1;
