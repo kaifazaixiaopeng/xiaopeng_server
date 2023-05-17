@@ -1,22 +1,24 @@
 package com.xiaopeng.server.vx;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.xiaopeng.server.app.bean.utils.HttpUtil;
 import com.xiaopeng.server.vx.entity.LogEntity;
 import com.xiaopeng.server.vx.entity.WeatherEntity;
-import com.xiaopeng.server.vx.mapper.LogMapper;
-import com.xiaopeng.server.vx.mapper.WeatherMapper;
 import com.xiaopeng.server.vx.service.LogService;
 import com.xiaopeng.server.vx.service.WeatherService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -34,6 +36,8 @@ import java.util.stream.Collectors;
  */
 @Configuration
 @Slf4j
+@RequestMapping("/timed")
+@RestController
 public class TimedTesk {
 
     @Autowired
@@ -41,9 +45,18 @@ public class TimedTesk {
     @Autowired
     private WeatherService weatherService;
     private final String key = "e8155303fe134b5ca279eb049cf03138";
-
     @Autowired
     private HttpUtil httpUtil;
+    @Autowired
+    private StringRedisTemplate redis;
+//    //定时获取access_token
+//    @Scheduled(cron = "0 58 7 * * ?")
+//    @PostMapping("/getAcc")
+//    public void getAccessToken(){
+//        //获取token
+//        accToken.getAccessTokenMethod();
+//    }
+
 
     @Scheduled(cron = "0 0 8 * * ?")
     public void myTasks() {
@@ -51,22 +64,65 @@ public class TimedTesk {
         startLog.setContent("每日定时任务开启");
         logService.save(startLog);
         log.info("每日定时任务开启");
-        String city = getCity();
-        JSONObject js = JSONObject.parseObject(city);
-        String weather = getWeather(js.getString("id"));
-        JSONObject jsonObject = JSONObject.parseObject(weather);
-        //调用wechart api获取accessToken
-
+        String access_token = redis.opsForValue().get("access_token");
+        if (StringUtils.isBlank(access_token)) {
+            AccToken.getAccessTokenMethod();
+        }
+        //查询天气
+        String dateStr = DateUtil.format(new Date(), "yyyy-MM-dd");
+        QueryWrapper<WeatherEntity> query = new QueryWrapper<>();
+        query.eq("fxDate",dateStr);
+        WeatherEntity entity=weatherService.getOne(query);
         //发送模板消息
-
+        String content = getContent(entity);
+        sendTextMsg(access_token, content);
         LogEntity endLog = new LogEntity();
         endLog.setContent("每日定时任务结束");
         log.info("每日定时任务结束");
         logService.save(endLog);
     }
 
+    /**
+     * 拼接消息文本
+     */
+    public String getContent(WeatherEntity entity) {
+        String s="温馨提醒,今天是"+entity.getFxDate()+",天气"+entity.getTextDay()+","+entity.getWindDirDay()+",风速"+entity.getWindSpeedDay()+",最高气温"+entity.getTempMax()
+                +"℃,最低气温"+entity.getTempMin()+"℃";
+        if(entity.getTextDay().contains("雨")){
+            s=s+",请戴好雨具";
+        }
+        return s;
+    }
+
+    /***
+     * 群发文本消息
+     * @param token
+     */
+    private Integer sendTextMsg(String token, String content) {
+        // 接口地址
+        String sendMsgApi = "https://api.weixin.qq.com/cgi-bin/message/mass/sendall?access_token=" + token;
+        //整体参数map
+        JSONObject paramMap = new JSONObject();
+        //相关map
+        JSONObject dataMap1 = new JSONObject();
+        JSONObject dataMap2 = new JSONObject();
+        dataMap1.put("is_to_all", true);//用于设定是否向全部用户发送，值为true或false，选择true该消息群发给所有用户，选择false可根据tag_id发送给指定群组的用户
+        dataMap1.put("tag_id", 1);//群发到的标签的tag_id，参见用户管理中用户分组接口，若is_to_all值为true，可不填写tag_id
+        dataMap2.put("content", content);//要推送的内容
+        paramMap.put("filter", dataMap1);//用于设定图文消息的接收者
+        paramMap.put("text", dataMap2);//文本内容
+        paramMap.put("msgtype", "text");//群发的消息类型，图文消息为mpnews，文本消息为text，语音为voice，音乐为music，图片为image，视频为video，卡券为wxcard
+        Map<String, String> back = httpUtil.sendByPost(sendMsgApi, JSONObject.toJSONString(paramMap));
+        String data = back.get("CODE");
+        System.out.println("群发返回:" + data);
+        JSONObject jsonObject = JSONObject.parseObject(data);
+        Integer re = jsonObject.getInteger("errcode");
+        return re;
+
+    }
+
     @Scheduled(cron = "0 0 0/2 * * ?")
-    private void testTasks() {
+    private void weatherTask() {
         LogEntity logEntity = new LogEntity();
         logEntity.setContent("天气定时任务开始");
         log.info("天气定时任务开始");
@@ -103,7 +159,7 @@ public class TimedTesk {
                     //天气：多云
                     String textDay = day.getString("textDay");
                     String textNight = day.getString("textNight");
-                    weatherEntity.setTextDay(textDay+"转"+textNight);
+                    weatherEntity.setTextDay(textDay + "转" + textNight);
                     //风向
                     weatherEntity.setWindDirDay(day.getString("windDirDay"));
                     //风速

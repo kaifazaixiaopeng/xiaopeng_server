@@ -15,6 +15,17 @@ spring:
 
   application:
     name: "xiaopeng_server"
+  # Redis 配置
+  redis:
+    # Redis 服务器地址
+    host: 1.117.232.107
+    # 连接端口号
+    port: 6379
+    password: 123456
+    # 数据库索引（0 - 15）
+    database: 0
+    # 连接超时时间（毫秒）
+    timeout: 10000
 ## mybatis
 ##实现mapper接口配置见mapper和接口的绑定路径
 ##将带有下划线的表字段映射为驼峰格式的实体类属性
@@ -22,3 +33,6 @@ spring:
 #  mapper-locations: classpath*:/mybatis/*.xml
 #  configuration:
 #    map-underscore-to-camel-case: true
+wechatConfig:
+  appId: wxb5eeda5a280edb34
+  appSecret: 9e433dbfcb935544a82e5078508311aa

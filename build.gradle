@@ -39,6 +39,9 @@ dependencies {
     // https://mvnrepository.com/artifact/org.junit.platform/junit-platform-launcher
     testImplementation group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.8.2'
 
+    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+    implementation 'commons-lang:commons-lang:2.6'
 }
 
 tasks.named('test') {

@@ -3,11 +3,13 @@ package com.xiaopeng.server;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.xiaopeng.server.app.bean.common.SimpleDate;
-import com.xiaopeng.server.app.bean.utils.CloneUtils;
 import com.xiaopeng.server.app.bean.pojo.User;
+import com.xiaopeng.server.app.bean.utils.CloneUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.beans.IntrospectionException;
@@ -19,6 +21,10 @@ import java.util.*;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 class XiaopengServerApplicationTests {
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+//    @Autowired
+//    private RedisUtil redisUtil;
 
     @Test
     void contextLoads() {
@@ -178,5 +184,12 @@ class XiaopengServerApplicationTests {
                 }
             }.start();
         System.out.println(JSONObject.toJSONString(list));
+    }
+    @Test
+    public void test(){
+        stringRedisTemplate.opsForValue().set("1","11111");
+        System.out.println(stringRedisTemplate.opsForValue().get("1"));
+//        redisUtil.set("2","2222");
+//        System.out.println(redisUtil.get("2"));
     }
 }
