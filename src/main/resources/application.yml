@@ -26,6 +26,25 @@ spring:
     database: 0
     # 连接超时时间（毫秒）
     timeout: 10000
+  rabbitmq:
+    password: guest
+    username: guest
+    port: 5672
+    addresses: 1.117.232.107
+    #开启发送失败返回
+    publisher-returns: true
+    #开启发送确认
+    listener:
+      simple:
+        #指定最小的消费者数量.
+        concurrency: 2
+        #指定最大的消费者数量.
+        max-concurrency: 2
+        #开启ack
+        acknowledge-mode: auto
+    #支持消息的确认与返回
+    template:
+      mandatory: true
 ## mybatis
 ##实现mapper接口配置见mapper和接口的绑定路径
 ##将带有下划线的表字段映射为驼峰格式的实体类属性

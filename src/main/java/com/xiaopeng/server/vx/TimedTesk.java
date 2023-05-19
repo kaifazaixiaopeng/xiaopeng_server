@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -49,40 +50,40 @@ public class TimedTesk {
     private HttpUtil httpUtil;
     @Autowired
     private StringRedisTemplate redis;
-//    //定时获取access_token
-//    @Scheduled(cron = "0 58 7 * * ?")
-//    @PostMapping("/getAcc")
-//    public void getAccessToken(){
-//        //获取token
-//        accToken.getAccessTokenMethod();
-//    }
-
-
-    @Scheduled(cron = "0 0 8 * * ?")
-    public void myTasks() {
-        LogEntity startLog = new LogEntity();
-        startLog.setContent("每日定时任务开启");
-        startLog.setCreateTime(new Date());
-        logService.save(startLog);
-        log.info("每日定时任务开启");
-        String access_token = redis.opsForValue().get("access_token");
-        if (StringUtils.isBlank(access_token)) {
-            AccToken.getAccessTokenMethod();
-        }
-        //查询天气
-        String dateStr = DateUtil.format(new Date(), "yyyy-MM-dd");
-        QueryWrapper<WeatherEntity> query = new QueryWrapper<>();
-        query.eq("fxDate",dateStr);
-        WeatherEntity entity=weatherService.getOne(query);
-        //发送模板消息
-        String content = getContent(entity);
-        sendTextMsg(access_token, content);
-        LogEntity endLog = new LogEntity();
-        endLog.setCreateTime(new Date());
-        endLog.setContent("每日定时任务结束");
-        log.info("每日定时任务结束");
-        logService.save(endLog);
+    //定时获取access_token
+    @Scheduled(fixedDelay = 6000000)
+    @PostMapping("/getAcc")
+    public void getAccessToken(){
+        //获取token
+        AccToken.getAccessTokenMethod();
     }
+
+
+//    @Scheduled(fixedDelay = 300000)
+//    public void myTasks() {
+//        LogEntity startLog = new LogEntity();
+//        startLog.setContent("每日定时任务开启");
+//        startLog.setCreateTime(new Date());
+//        logService.save(startLog);
+//        log.info("每日定时任务开启");
+//        String access_token = redis.opsForValue().get("access_token");
+//        if (StringUtils.isBlank(access_token)) {
+//            AccToken.getAccessTokenMethod();
+//        }
+//        //查询天气
+//        String dateStr = DateUtil.format(new Date(), "yyyy-MM-dd");
+//        QueryWrapper<WeatherEntity> query = new QueryWrapper<>();
+//        query.eq("fxDate",dateStr);
+//        WeatherEntity entity=weatherService.getOne(query);
+//        //发送模板消息
+//        String content = getContent(entity);
+//        sendTextMsg(access_token, content);
+//        LogEntity endLog = new LogEntity();
+//        endLog.setCreateTime(new Date());
+//        endLog.setContent("每日定时任务结束");
+//        log.info("每日定时任务结束");
+//        logService.save(endLog);
+//    }
 
     /**
      * 拼接消息文本
@@ -145,6 +146,7 @@ public class TimedTesk {
             } catch (ParseException e) {
                 e.printStackTrace();
             }
+
             //链接地址
             String fxLink = jsonObject.getString("fxLink");
             JSONArray daily = jsonObject.getJSONArray("daily");
@@ -162,7 +164,11 @@ public class TimedTesk {
                     //天气：多云
                     String textDay = day.getString("textDay");
                     String textNight = day.getString("textNight");
-                    weatherEntity.setTextDay(textDay + "转" + textNight);
+                    if (ObjectUtil.equal(textDay, textNight)) {
+                        weatherEntity.setTextDay(textDay);
+                    } else {
+                        weatherEntity.setTextDay(textDay + "转" + textNight);
+                    }
                     //风向
                     weatherEntity.setWindDirDay(day.getString("windDirDay"));
                     //风速

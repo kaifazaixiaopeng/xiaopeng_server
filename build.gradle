@@ -42,6 +42,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
 
     implementation 'commons-lang:commons-lang:2.6'
+    // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-amqp
+    implementation group: 'org.springframework.boot', name: 'spring-boot-starter-amqp', version: '2.2.6.RELEASE'
+
 }
 
 tasks.named('test') {

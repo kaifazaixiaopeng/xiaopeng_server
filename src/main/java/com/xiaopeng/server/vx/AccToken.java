@@ -37,7 +37,7 @@ public class AccToken {
      * 获取AccessToken
      * @return
      */
-    public static void getAccessTokenMethod() {
+    public static String getAccessTokenMethod() {
         try {
             String url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" +
                     appId + "&secret=" + appSecret;
@@ -56,9 +56,11 @@ public class AccToken {
                 String access_token = object.getString("access_token");
                 redis.opsForValue().set("access_token", access_token, 2, TimeUnit.HOURS);
             }
+            return object.getString("access_token");
         } catch (Exception e) {
             log.error("获取accessToken异常" + e.getMessage());
         }
+        return null;
     }
 
 }
