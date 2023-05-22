@@ -51,7 +51,7 @@ public class TimedTesk {
     @Autowired
     private StringRedisTemplate redis;
     //定时获取access_token
-    @Scheduled(fixedDelay = 6000000)
+    @Scheduled(fixedDelay = 6000)
     @PostMapping("/getAcc")
     public void getAccessToken(){
         //获取token
