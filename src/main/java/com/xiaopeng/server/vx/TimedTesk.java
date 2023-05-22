@@ -64,7 +64,7 @@ public class TimedTesk {
     private DayOFCommemorationService dayOFCommemorationService;
 
     @Value("${wechatConfig.appId}")
-    private static String appId;
+    private String appId;
 
     public static final String TEMPLATE_URL = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=";
 
