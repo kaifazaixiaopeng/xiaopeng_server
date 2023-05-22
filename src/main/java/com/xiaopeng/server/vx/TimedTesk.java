@@ -5,10 +5,13 @@ import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.xiaopeng.server.app.bean.utils.HttpUtil;
+import com.xiaopeng.server.vx.entity.DayOFCommemoration;
 import com.xiaopeng.server.vx.entity.LogEntity;
 import com.xiaopeng.server.vx.entity.WeChatMsgResult;
 import com.xiaopeng.server.vx.entity.WeatherEntity;
+import com.xiaopeng.server.vx.service.DayOFCommemorationService;
 import com.xiaopeng.server.vx.service.LogService;
 import com.xiaopeng.server.vx.service.WeatherService;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +26,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -53,8 +59,13 @@ public class TimedTesk {
     private StringRedisTemplate redis;
     @Autowired
     private AccToken accToken;
+
+    @Autowired
+    private DayOFCommemorationService dayOFCommemorationService;
+
     @Value("${wechatConfig.appId}")
     private static String appId;
+
     public static final String TEMPLATE_URL = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=";
 
     //定时获取access_token
@@ -130,6 +141,17 @@ public class TimedTesk {
         Integer re = jsonObject.getInteger("errcode");
         return re;
 
+    }
+    @Scheduled(cron = "0 0 8 * * ?")
+    private void day_of_commemoration() {
+        // 指定日期
+        LocalDate date = LocalDate.of(2022, 11, 3);
+        // 计算天数
+        long daysBetween = ChronoUnit.DAYS.between(date, LocalDate.now());
+        DayOFCommemoration dayOFCommemoration = new DayOFCommemoration();
+        dayOFCommemoration.setId(1L);
+        dayOFCommemoration.setNumber(daysBetween);
+        dayOFCommemorationService.updateById(dayOFCommemoration);
     }
 
     @Scheduled(cron = "0 0 0/12 * * ?")
