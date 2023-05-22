@@ -40,8 +40,9 @@ dependencies {
     testImplementation group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.8.2'
 
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+// https://mvnrepository.com/artifact/org.apache.commons/commons-lang3
+    implementation group: 'org.apache.commons', name: 'commons-lang3', version: '3.12.0'
 
-    implementation 'commons-lang:commons-lang:2.6'
     // https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-amqp
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-amqp', version: '2.2.6.RELEASE'
 

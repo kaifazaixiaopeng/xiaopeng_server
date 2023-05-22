@@ -1,19 +1,19 @@
 package com.xiaopeng.server.vx;
 
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.xiaopeng.server.app.bean.utils.HttpUtil;
 import com.xiaopeng.server.vx.entity.LogEntity;
+import com.xiaopeng.server.vx.entity.WeChatMsgResult;
 import com.xiaopeng.server.vx.entity.WeatherEntity;
 import com.xiaopeng.server.vx.service.LogService;
 import com.xiaopeng.server.vx.service.WeatherService;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -50,12 +51,20 @@ public class TimedTesk {
     private HttpUtil httpUtil;
     @Autowired
     private StringRedisTemplate redis;
+    @Value("${wechatConfig.appId}")
+    private static String appId;
+    public static final String TEMPLATE_URL = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=";
+
     //定时获取access_token
     @Scheduled(fixedDelay = 6000)
     @PostMapping("/getAcc")
-    public void getAccessToken(){
+    public void getAccessToken() {
         //获取token
-        AccToken.getAccessTokenMethod();
+        try {
+            AccToken.getAccessTokenMethod();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 
@@ -89,10 +98,10 @@ public class TimedTesk {
      * 拼接消息文本
      */
     public String getContent(WeatherEntity entity) {
-        String s="温馨提醒,今天是"+entity.getFxDate()+",天气"+entity.getTextDay()+","+entity.getWindDirDay()+",风速"+entity.getWindSpeedDay()+",最高气温"+entity.getTempMax()
-                +"℃,最低气温"+entity.getTempMin()+"℃";
-        if(entity.getTextDay().contains("雨")){
-            s=s+",请带好雨具";
+        String s = "温馨提醒,今天是" + entity.getFxDate() + ",天气" + entity.getTextDay() + "," + entity.getWindDirDay() + ",风速" + entity.getWindSpeedDay() + ",最高气温" + entity.getTempMax()
+                + "℃,最低气温" + entity.getTempMin() + "℃";
+        if (entity.getTextDay().contains("雨")) {
+            s = s + ",请带好雨具";
         }
         return s;
     }
@@ -124,7 +133,7 @@ public class TimedTesk {
 
     }
 
-    @Scheduled(cron = "0 0 0/2 * * ?")
+    @Scheduled(cron = "0 0 0/12 * * ?")
     private void weatherTask() {
         LogEntity logEntity = new LogEntity();
         logEntity.setContent("天气定时任务开始");
@@ -253,6 +262,40 @@ public class TimedTesk {
         msg.toString().replaceAll("\\\\", "");
         log.info(msg.toString());
         return msg.toString();
+    }
+
+    /**
+     * 微信模板消息，通用
+     */
+    public void sendPublicMessage(String templateId, String toUserId, Map<String, Object> valueMap) {
+        try {
+            // 获取access_token
+            String accessTokenMethod = AccToken.getAccessTokenMethod();
+            // 设置模板消息基本参数
+            Map<String, Object> map = new HashMap<>();
+            map.put("touser", toUserId);
+            map.put("template_id", templateId);
+            map.put("appid", appId);
+            sendMessage(TEMPLATE_URL + accessTokenMethod, map, valueMap);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 发送消息
+     *
+     * @param url 微信模板消息url
+     */
+    private void sendMessage(String url, Map<String, Object> map, Map<String, Object> valueMap) throws IllegalAccessException, InstantiationException {
+        map.put("data", valueMap);
+        String msg = JSON.toJSONString(map);
+        JSONObject post = httpUtil.sendpost(url, msg);
+        log.info("发送模板消息{}", msg);
+        log.info("收到回复{}", post);
+        LogEntity logEntity = new LogEntity();
+        logEntity.setIsSuccess(1);
+        logEntity.setContent(JSONObject.toJSONString(post));
     }
 
 }

@@ -1,8 +1,8 @@
 package com.xiaopeng.server.vx;
 
 import com.alibaba.fastjson.JSONObject;
-import com.xiaopeng.server.vx.entity.User;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -29,16 +29,21 @@ public class AccToken {
 
     @Value("${wechatConfig.appId}")
     private static String appId;
-    @Value("${wechatConfig.appId}")
+    @Value("${wechatConfig.appSecret}")
     private static String appSecret;
     @Autowired
     private static StringRedisTemplate redis;
+
     /**
      * 获取AccessToken
+     *
      * @return
      */
-    public static String getAccessTokenMethod() {
-        try {
+    public static String getAccessTokenMethod() throws Exception{
+        String token = redis.opsForValue().get("access_token");
+        if (StringUtils.isNotBlank(token)) {
+            return token;
+        } else {
             String url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" +
                     appId + "&secret=" + appSecret;
             StringBuilder json = new StringBuilder();
@@ -57,10 +62,7 @@ public class AccToken {
                 redis.opsForValue().set("access_token", access_token, 2, TimeUnit.HOURS);
             }
             return object.getString("access_token");
-        } catch (Exception e) {
-            log.error("获取accessToken异常" + e.getMessage());
         }
-        return null;
     }
 
 }

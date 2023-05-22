@@ -163,7 +163,50 @@ public class HttpUtil {
         return resultMap;
     }
 
+    /**
+     * 通用，http post请求
+     * @param url
+     * @param params
+     * @return
+     */
+    public JSONObject sendpost(String url, String params) {
+        JSONObject jsonObject = new JSONObject();
+        CloseableHttpClient httpclient = HttpClients.createDefault();
+        CloseableHttpResponse response = null;
+        String resultString = "";
 
+        try {
+            log.info("========= 请求地址：{} ==========", url);
+            HttpPost httpPost = new HttpPost(url);
+            httpPost.setHeader("Content-Type", "application/json");
+            if (params != null) {
+                log.info("========= 请求参数：{} ==========", params);
+                StringEntity entity = new StringEntity(params, ContentType.APPLICATION_JSON);
+                httpPost.setEntity(entity);
+            }
+            response = httpclient.execute(httpPost);
+            if (response.getEntity() != null) {
+                resultString = EntityUtils.toString(response.getEntity(), "UTF-8");
+            }
+            log.info("========= 响应报文：{} ==========", resultString);
+            jsonObject.put("CODE", "0");
+            jsonObject.put("MSG", resultString);
+        } catch (Exception e) {
+            log.error("===》HttpUtil.post方法执行出错，url：{}，信息：{}", url, e.toString());
+            jsonObject.put("CODE", "1");
+            jsonObject.put("MSG", e.toString());
+        } finally {
+            try {
+                if (response != null) {
+                    response.close();
+                }
+                httpclient.close();
+            } catch (IOException e) {
+                log.error("===》HttpUtil.post方法关闭出错，url：{}，信息：{}", url, e.toString());
+            }
+        }
+        return jsonObject;
+    }
 
 
     /**
