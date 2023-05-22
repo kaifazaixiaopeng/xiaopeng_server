@@ -28,41 +28,46 @@ import java.util.concurrent.TimeUnit;
 public class AccToken {
 
     @Value("${wechatConfig.appId}")
-    private static String appId;
+    private  String appId;
     @Value("${wechatConfig.appSecret}")
-    private static String appSecret;
+    private  String appSecret;
     @Autowired
-    private static StringRedisTemplate redis;
+    private  StringRedisTemplate redis;
 
     /**
      * 获取AccessToken
      *
      * @return
      */
-    public static String getAccessTokenMethod() throws Exception{
-        String token = redis.opsForValue().get("access_token");
-        if (StringUtils.isNotBlank(token)) {
-            return token;
-        } else {
-            String url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" +
-                    appId + "&secret=" + appSecret;
-            StringBuilder json = new StringBuilder();
-            URL oracle = new URL(url);
-            URLConnection yc = oracle.openConnection();
-            BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream(), StandardCharsets.UTF_8));
-            String inputLine;
-            while ((inputLine = in.readLine()) != null) {
-                json.append(inputLine);
+    public  String getAccessTokenMethod() {
+        try {
+            String token = redis.opsForValue().get("access_token");
+            if (StringUtils.isNotBlank(token)) {
+                return token;
+            } else {
+                String url = "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" +
+                        appId + "&secret=" + appSecret;
+                StringBuilder json = new StringBuilder();
+                URL oracle = new URL(url);
+                URLConnection yc = oracle.openConnection();
+                BufferedReader in = new BufferedReader(new InputStreamReader(yc.getInputStream(), StandardCharsets.UTF_8));
+                String inputLine;
+                while ((inputLine = in.readLine()) != null) {
+                    json.append(inputLine);
+                }
+                in.close();
+                JSONObject object = (JSONObject) JSONObject.parse(String.valueOf(json));
+                log.info(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "获取access_token:{}", object.getString("access_token"));
+                if (object.getString("access_token") != null) {
+                    String access_token = object.getString("access_token");
+                    redis.opsForValue().set("access_token", access_token, 2, TimeUnit.HOURS);
+                }
+                return object.getString("access_token");
             }
-            in.close();
-            JSONObject object = (JSONObject) JSONObject.parse(String.valueOf(json));
-            log.info(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date()) + "获取access_token:{}", object.getString("access_token"));
-            if (object.getString("access_token") != null) {
-                String access_token = object.getString("access_token");
-                redis.opsForValue().set("access_token", access_token, 2, TimeUnit.HOURS);
-            }
-            return object.getString("access_token");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return null;
     }
 
 }

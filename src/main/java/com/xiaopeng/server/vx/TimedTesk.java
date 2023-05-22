@@ -51,6 +51,8 @@ public class TimedTesk {
     private HttpUtil httpUtil;
     @Autowired
     private StringRedisTemplate redis;
+    @Autowired
+    private AccToken accToken;
     @Value("${wechatConfig.appId}")
     private static String appId;
     public static final String TEMPLATE_URL = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=";
@@ -60,11 +62,8 @@ public class TimedTesk {
     @PostMapping("/getAcc")
     public void getAccessToken() {
         //获取token
-        try {
-            AccToken.getAccessTokenMethod();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        accToken.getAccessTokenMethod();
+
     }
 
 
@@ -270,7 +269,7 @@ public class TimedTesk {
     public void sendPublicMessage(String templateId, String toUserId, Map<String, Object> valueMap) {
         try {
             // 获取access_token
-            String accessTokenMethod = AccToken.getAccessTokenMethod();
+            String accessTokenMethod = accToken.getAccessTokenMethod();
             // 设置模板消息基本参数
             Map<String, Object> map = new HashMap<>();
             map.put("touser", toUserId);
