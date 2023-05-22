@@ -58,7 +58,7 @@ public class TimedTesk {
     public static final String TEMPLATE_URL = "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=";
 
     //定时获取access_token
-    @Scheduled(fixedDelay = 6000)
+    @Scheduled(cron = "0 0 8 * * ?")
     @PostMapping("/getAcc")
     public void getAccessToken() {
         //获取token
