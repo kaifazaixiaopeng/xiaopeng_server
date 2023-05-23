@@ -151,7 +151,7 @@ public class TimedTesk {
         DayOFCommemoration dayOFCommemoration = new DayOFCommemoration();
         dayOFCommemoration.setId(1L);
         dayOFCommemoration.setNumber(daysBetween);
-        dayOFCommemorationService.updateById(dayOFCommemoration);
+        dayOFCommemorationService.saveOrUpdate(dayOFCommemoration);
     }
 
     @Scheduled(cron = "0 0 0/12 * * ?")
