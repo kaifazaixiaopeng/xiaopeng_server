@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.xiaopeng.server.app.bean.utils.HttpUtil;
+import com.xiaopeng.server.vx.config.RabbitMqConfig;
 import com.xiaopeng.server.vx.entity.DayOFCommemoration;
 import com.xiaopeng.server.vx.entity.LogEntity;
 import com.xiaopeng.server.vx.entity.WeChatMsgResult;
@@ -15,6 +16,7 @@ import com.xiaopeng.server.vx.service.DayOFCommemorationService;
 import com.xiaopeng.server.vx.service.LogService;
 import com.xiaopeng.server.vx.service.WeatherService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +26,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -33,6 +36,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -59,7 +63,8 @@ public class TimedTesk {
     private StringRedisTemplate redis;
     @Autowired
     private AccToken accToken;
-
+    @Autowired
+    private RabbitTemplate rabbitTemplate;
     @Autowired
     private DayOFCommemorationService dayOFCommemorationService;
 
@@ -77,7 +82,17 @@ public class TimedTesk {
 
     }
 
-
+    @Scheduled(fixedDelay = 3000)
+    public void mqDemo(){
+        /**
+         * 参数1：交换机名称；参数2：路由键，这里没有使用到路由键，所以为空；参数3：发送的消息内容。
+         */
+        String city = getCity();
+        JSONObject js = JSONObject.parseObject(city);
+        String name = js.getString("name");
+        String weather = getWeather(js.getString("id"));
+        rabbitTemplate.convertAndSend(RabbitMqConfig.AMQ_TOPIC,RabbitMqConfig.ROUTING_KEY,weather);
+    }
 //    @Scheduled(fixedDelay = 300000)
 //    public void myTasks() {
 //        LogEntity startLog = new LogEntity();
@@ -102,6 +117,7 @@ public class TimedTesk {
 //        endLog.setContent("每日定时任务结束");
 //        log.info("每日定时任务结束");
 //        logService.save(endLog);
+//    rabbitTemplate.convertAndSend(RabbitMqConfig.AMQ_TOPIC,RabbitMqConfig.AMQ_TOPIC,"1111");
 //    }
 
     /**
@@ -157,9 +173,9 @@ public class TimedTesk {
     @Scheduled(cron = "0 0 0/12 * * ?")
     private void weatherTask() {
         LogEntity logEntity = new LogEntity();
-        logEntity.setContent("天气定时任务开始");
+        logEntity.setContent("Mq同步天气开始");
         logEntity.setCreateTime(new Date());
-        log.info("天气定时任务开始");
+        log.info("Mq同步天气开始");
         logService.save(logEntity);
         try {
             String city = getCity();
@@ -223,17 +239,17 @@ public class TimedTesk {
                 }
             }
             LogEntity logEntity1 = new LogEntity();
-            logEntity1.setContent("天气定时任务结束");
+            logEntity1.setContent("Mq同步天气结束");
             logEntity1.setCreateTime(new Date());
-            log.info("天气定时任务结束");
+            log.info("Mq同步天气结束");
             logService.save(logEntity1);
             log.info(weather);
         } catch (Exception e) {
             LogEntity logEntity1 = new LogEntity();
-            logEntity1.setContent("天气定时任务异常结束");
+            logEntity1.setContent("Mq同步天气异常结束");
             logEntity1.setIsSuccess(2);
             logEntity1.setCreateTime(new Date());
-            log.info("天气定时任务异常结束");
+            log.info("Mq同步天气异常结束");
             logService.save(logEntity1);
         }
 
@@ -318,5 +334,7 @@ public class TimedTesk {
         logEntity.setIsSuccess(1);
         logEntity.setContent(JSONObject.toJSONString(post));
     }
+
+
 
 }

@@ -17,6 +17,7 @@ import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -191,5 +192,25 @@ class XiaopengServerApplicationTests {
         System.out.println(stringRedisTemplate.opsForValue().get("1"));
 //        redisUtil.set("2","2222");
 //        System.out.println(redisUtil.get("2"));
+    }
+
+    @Test
+    public void test990(){
+        //导入
+        List<Long> longs = new ArrayList<>();
+        //数据库
+        List<Long> longs2 = new ArrayList<>();
+        longs.add(1L);
+        longs.add(2L);
+        longs.add(3L);
+        longs.add(4L);
+        longs.add(5L);
+        longs2.add(1L);
+        longs2.add(2L);
+        List<Long> diff = longs.stream()
+                .filter(l -> !longs2.contains(l))
+                .collect(Collectors.toList());
+
+        System.out.println(JSONObject.toJSONString(diff));
     }
 }
