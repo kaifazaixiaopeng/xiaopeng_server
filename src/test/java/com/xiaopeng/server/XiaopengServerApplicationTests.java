@@ -227,11 +227,11 @@ class XiaopengServerApplicationTests {
     /**
      * 热搜
      */
-    @Autowired
-    private NewsTask newsTask;
-    @Test
-    public void testNew(){
-        newsTask.grabBaiduHotNewsJson();
-    }
+//    @Autowired
+//    private NewsTask newsTask;
+//    @Test
+//    public void testNew(){
+//        newsTask.grabBaiduHotNewsJson();
+//    }
 
 }
