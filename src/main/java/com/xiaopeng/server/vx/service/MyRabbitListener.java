@@ -1,18 +1,10 @@
 package com.xiaopeng.server.vx.service;
 
-import com.alibaba.fastjson.JSONObject;
-import com.rabbitmq.client.Channel;
-import com.xiaopeng.server.vx.TimedTesk;
 import com.xiaopeng.server.vx.config.RabbitMqConfig;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.amqp.core.Message;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
-
-import java.io.IOException;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @ClassName: RabbitListener

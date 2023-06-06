@@ -50,7 +50,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @RequestMapping("/timed")
 @RestController
-public class TimedTesk {
+public class TimedTask {
 
     @Autowired
     private LogService logService;
@@ -82,16 +82,13 @@ public class TimedTesk {
 
     }
 
-    @Scheduled(fixedDelay = 3000)
-    public void mqDemo(){
+    @Scheduled(fixedDelay = 3000000)
+    public void mqDemo() {
         /**
          * 参数1：交换机名称；参数2：路由键，这里没有使用到路由键，所以为空；参数3：发送的消息内容。
          */
-        String city = getCity();
-        JSONObject js = JSONObject.parseObject(city);
-        String name = js.getString("name");
-        String weather = getWeather(js.getString("id"));
-        rabbitTemplate.convertAndSend(RabbitMqConfig.AMQ_TOPIC,RabbitMqConfig.ROUTING_KEY,weather);
+        String weather = "我是消息Message";
+        rabbitTemplate.convertAndSend(RabbitMqConfig.AMQ_TOPIC, RabbitMqConfig.ROUTING_KEY, weather);
     }
 //    @Scheduled(fixedDelay = 300000)
 //    public void myTasks() {
@@ -158,6 +155,7 @@ public class TimedTesk {
         return re;
 
     }
+
     @Scheduled(cron = "0 0 8 * * ?")
     private void day_of_commemoration() {
         // 指定日期
@@ -334,7 +332,6 @@ public class TimedTesk {
         logEntity.setIsSuccess(1);
         logEntity.setContent(JSONObject.toJSONString(post));
     }
-
 
 
 }

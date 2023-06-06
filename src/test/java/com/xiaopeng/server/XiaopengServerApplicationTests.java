@@ -1,10 +1,12 @@
 package com.xiaopeng.server;
 
+import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.xiaopeng.server.app.bean.common.SimpleDate;
 import com.xiaopeng.server.app.bean.pojo.User;
 import com.xiaopeng.server.app.bean.utils.CloneUtils;
+import com.xiaopeng.server.vx.service.NewsTask;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -213,4 +215,23 @@ class XiaopengServerApplicationTests {
 
         System.out.println(JSONObject.toJSONString(diff));
     }
+    @Test
+    public void test9900(){
+        Calendar c = Calendar.getInstance();
+        c.add(Calendar.MONTH, -1);
+        String format = DateUtil.format(DateUtil.beginOfMonth(c.getTime()), "yyyy-MM-dd");
+        String eformat = DateUtil.format(DateUtil.endOfMonth(c.getTime()), "yyyy-MM-dd");
+        System.out.println(format);
+        System.out.println(eformat);
+    }
+    /**
+     * 热搜
+     */
+    @Autowired
+    private NewsTask newsTask;
+    @Test
+    public void testNew(){
+        newsTask.grabBaiduHotNewsJson();
+    }
+
 }
