@@ -33,7 +33,7 @@ public class NewsTask {
     @Autowired
     private LogService logService;
 
-    @Scheduled(cron = "0 0 0/1  * * ? ")
+    @Scheduled(cron = "0 0 0/4 * * ? ")
     public void grabBaiduHotNewsJson() {
         LogEntity logEntity = new LogEntity();
         logEntity.setContent("热搜爬虫task开始");
@@ -58,8 +58,8 @@ public class NewsTask {
                 NewsEntity o = new NewsEntity();
                 o.setTitle(titles.get(i).text().trim());
                 o.setContent(contents.get(i).text().replaceAll("查看更多>", "").trim());
-//                o.setImg(imgs.get(i).attr("src"));
-//                o.setUrl(urls.get(i).attr("href"));
+                o.setImg(imgs.get(i).attr("src"));
+                o.setUrl(urls.get(i).attr("href"));
                 list.add(o);
                 log.info(JSONObject.toJSONString(o));
             }
