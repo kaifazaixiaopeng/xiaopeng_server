@@ -16,6 +16,9 @@ import com.xiaopeng.server.vx.service.DayOFCommemorationService;
 import com.xiaopeng.server.vx.service.LogService;
 import com.xiaopeng.server.vx.service.WeatherService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.AmqpException;
+import org.springframework.amqp.core.Message;
+import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,10 +35,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -82,14 +82,30 @@ public class TimedTask {
 
     }
 
-    @Scheduled(fixedDelay = 3000000)
+    @Scheduled(fixedDelay = 3000)
     public void mqDemo() {
         /**
          * 参数1：交换机名称；参数2：路由键，这里没有使用到路由键，所以为空；参数3：发送的消息内容。
          */
-        String weather = "我是消息Message";
-        log.info(weather);
-        rabbitTemplate.convertAndSend(RabbitMqConfig.AMQ_TOPIC, RabbitMqConfig.ROUTING_KEY, weather);
+        Random random = new Random();
+        int i = random.nextInt();
+        String sb = "我是消息Message +  " + i;
+        log.info(sb.toString());
+        /**
+         * 普通队列发送消息
+         */
+        rabbitTemplate.convertAndSend(RabbitMqConfig.AMQ_TOPIC, RabbitMqConfig.ROUTING_KEY, sb.toString());
+        /**
+         * 延迟队列发送消息，
+         */
+//        rabbitTemplate.convertAndSend(RabbitMqConfig.DELAYED_TOPIC, RabbitMqConfig.DELAYED_KEY, weather, new MessagePostProcessor() {
+//            @Override
+//            public Message postProcessMessage(Message message) throws AmqpException {
+//                //给消息设置延迟毫秒值
+//                message.getMessageProperties().setHeader("x-delay", 3000000);
+//                return message;
+//            }
+//        });
     }
 //    @Scheduled(fixedDelay = 300000)
 //    public void myTasks() {

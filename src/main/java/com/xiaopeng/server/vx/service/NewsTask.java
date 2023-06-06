@@ -1,6 +1,8 @@
 package com.xiaopeng.server.vx.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.xiaopeng.server.vx.entity.LogEntity;
 import com.xiaopeng.server.vx.entity.NewsEntity;
 import com.xiaopeng.server.vx.mapper.LogMapper;
@@ -16,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName: News
@@ -63,7 +66,17 @@ public class NewsTask {
                 list.add(o);
                 log.info(JSONObject.toJSONString(o));
             }
-            newsService.saveBatch(list);
+            List<NewsEntity> res = new ArrayList<>();
+            list.forEach(e->{
+                LambdaQueryWrapper<NewsEntity> newsEntityQueryWrapper = new LambdaQueryWrapper<>();
+                newsEntityQueryWrapper.eq(NewsEntity::getTitle,e.getTitle());
+                int count = newsService.count(newsEntityQueryWrapper);
+                if(count==0){
+                    res.add(e);
+                }
+            });
+
+            newsService.saveBatch(res);
             LogEntity logEntity1 = new LogEntity();
             logEntity1.setContent("热搜爬虫task结束");
             logEntity1.setIsSuccess(1);

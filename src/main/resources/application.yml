@@ -41,8 +41,8 @@ spring:
         #指定最大的消费者数量.
         max-concurrency: 2
         #开启ack
-        acknowledge-mode: auto
-#        acknowledge-mode: MANUAL
+#        acknowledge-mode: auto
+        acknowledge-mode: MANUAL
     #支持消息的确认与返回
     template:
       mandatory: true
