@@ -1,7 +1,9 @@
 package com.xiaopeng.server.vx.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.xiaopeng.server.vx.entity.LogEntity;
 import com.xiaopeng.server.vx.entity.NewsEntity;
+import com.xiaopeng.server.vx.mapper.LogMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -12,6 +14,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,8 +30,16 @@ public class NewsTask {
     @Autowired
     private NewsService newsService;
 
+    @Autowired
+    private LogService logService;
+
     @Scheduled(cron = "0 0 0/1  * * ? ")
     public void grabBaiduHotNewsJson() {
+        LogEntity logEntity = new LogEntity();
+        logEntity.setContent("热搜爬虫task开始");
+        logEntity.setIsSuccess(1);
+        logEntity.setCreateTime(new Date());
+        logService.save(logEntity);
         String url = "https://top.baidu.com/board?tab=realtime&sa=fyb_realtime_31065";
         List<NewsEntity> list = new ArrayList<>();
         try {
@@ -53,6 +64,11 @@ public class NewsTask {
                 log.info(JSONObject.toJSONString(o));
             }
             newsService.saveBatch(list);
+            LogEntity logEntity1 = new LogEntity();
+            logEntity1.setContent("热搜爬虫task结束");
+            logEntity1.setIsSuccess(1);
+            logEntity1.setCreateTime(new Date());
+            logService.save(logEntity1);
         } catch (IOException e) {
             e.printStackTrace();
         }
