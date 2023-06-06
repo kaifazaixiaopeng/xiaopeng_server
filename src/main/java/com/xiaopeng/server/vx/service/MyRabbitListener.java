@@ -24,7 +24,6 @@ public class MyRabbitListener {
      */
     @RabbitHandler
     public void getMyRabbitListenerMessage(String weather) {
-        log.info(weather);
         log.info("消费成功");
     }
 

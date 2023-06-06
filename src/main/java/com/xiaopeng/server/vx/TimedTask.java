@@ -88,6 +88,7 @@ public class TimedTask {
          * 参数1：交换机名称；参数2：路由键，这里没有使用到路由键，所以为空；参数3：发送的消息内容。
          */
         String weather = "我是消息Message";
+        log.info(weather);
         rabbitTemplate.convertAndSend(RabbitMqConfig.AMQ_TOPIC, RabbitMqConfig.ROUTING_KEY, weather);
     }
 //    @Scheduled(fixedDelay = 300000)

@@ -33,7 +33,7 @@ public class NewsTask {
     @Autowired
     private LogService logService;
 
-    @Scheduled(cron = "0 0 0/4 * * ? ")
+    @Scheduled(cron = "0 0 8 * * ? ")
     public void grabBaiduHotNewsJson() {
         LogEntity logEntity = new LogEntity();
         logEntity.setContent("热搜爬虫task开始");
