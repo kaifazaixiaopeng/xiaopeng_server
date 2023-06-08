@@ -82,31 +82,31 @@ public class TimedTask {
 
     }
 
-    @Scheduled(fixedDelay = 3000)
-    public void mqDemo() {
-        /**
-         * 参数1：交换机名称；参数2：路由键，这里没有使用到路由键，所以为空；参数3：发送的消息内容。
-         */
-        Random random = new Random();
-        int i = random.nextInt();
-        String sb = "我是消息Message +  " + i;
-        log.info(sb.toString());
-        /**
-         * 普通队列发送消息
-         */
-        rabbitTemplate.convertAndSend(RabbitMqConfig.AMQ_TOPIC, RabbitMqConfig.ROUTING_KEY, sb.toString());
-        /**
-         * 延迟队列发送消息，
-         */
-//        rabbitTemplate.convertAndSend(RabbitMqConfig.DELAYED_TOPIC, RabbitMqConfig.DELAYED_KEY, weather, new MessagePostProcessor() {
-//            @Override
-//            public Message postProcessMessage(Message message) throws AmqpException {
-//                //给消息设置延迟毫秒值
-//                message.getMessageProperties().setHeader("x-delay", 3000000);
-//                return message;
-//            }
-//        });
-    }
+//    @Scheduled(fixedDelay = 3000)
+//    public void mqDemo() {
+//        /**
+//         * 参数1：交换机名称；参数2：路由键，这里没有使用到路由键，所以为空；参数3：发送的消息内容。
+//         */
+//        Random random = new Random();
+//        int i = random.nextInt();
+//        String sb = "我是消息Message +  " + i;
+//        log.info(sb.toString());
+//        /**
+//         * 普通队列发送消息
+//         */
+//        rabbitTemplate.convertAndSend(RabbitMqConfig.AMQ_TOPIC, RabbitMqConfig.ROUTING_KEY, sb.toString());
+//        /**
+//         * 延迟队列发送消息，
+//         */
+////        rabbitTemplate.convertAndSend(RabbitMqConfig.DELAYED_TOPIC, RabbitMqConfig.DELAYED_KEY, weather, new MessagePostProcessor() {
+////            @Override
+////            public Message postProcessMessage(Message message) throws AmqpException {
+////                //给消息设置延迟毫秒值
+////                message.getMessageProperties().setHeader("x-delay", 3000000);
+////                return message;
+////            }
+////        });
+//    }
 //    @Scheduled(fixedDelay = 300000)
 //    public void myTasks() {
 //        LogEntity startLog = new LogEntity();
@@ -261,7 +261,7 @@ public class TimedTask {
             log.info(weather);
         } catch (Exception e) {
             LogEntity logEntity1 = new LogEntity();
-            logEntity1.setContent("Mq同步天气异常结束");
+            logEntity1.setContent("Mq同步天气异常结束"+e.getMessage());
             logEntity1.setIsSuccess(2);
             logEntity1.setCreateTime(new Date());
             log.info("Mq同步天气异常结束");
