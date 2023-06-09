@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.xiaopeng.server.app.bean.common.SimpleDate;
 import com.xiaopeng.server.app.bean.pojo.User;
 import com.xiaopeng.server.app.bean.utils.CloneUtils;
-import com.xiaopeng.server.vx.service.NewsTask;
+import com.xiaopeng.server.vx.NewsTask;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -227,11 +227,11 @@ class XiaopengServerApplicationTests {
     /**
      * 热搜
      */
-//    @Autowired
-//    private NewsTask newsTask;
-//    @Test
-//    public void testNew(){
-//        newsTask.grabBaiduHotNewsJson();
-//    }
+    @Autowired
+    private NewsTask newsTask;
+    @Test
+    public void testNew(){
+        newsTask.grabBaiduHotNewsJson();
+    }
 
 }

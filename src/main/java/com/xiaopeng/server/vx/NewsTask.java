@@ -1,4 +1,4 @@
-package com.xiaopeng.server.vx.service;
+package com.xiaopeng.server.vx;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.xiaopeng.server.vx.entity.LogEntity;
 import com.xiaopeng.server.vx.entity.NewsEntity;
 import com.xiaopeng.server.vx.mapper.LogMapper;
+import com.xiaopeng.server.vx.service.LogService;
+import com.xiaopeng.server.vx.service.NewsService;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
