@@ -2,10 +2,8 @@ package com.xiaopeng.server.vx;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.xiaopeng.server.vx.entity.LogEntity;
 import com.xiaopeng.server.vx.entity.NewsEntity;
-import com.xiaopeng.server.vx.mapper.LogMapper;
 import com.xiaopeng.server.vx.service.LogService;
 import com.xiaopeng.server.vx.service.NewsService;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +18,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @ClassName: News
@@ -38,7 +35,7 @@ public class NewsTask {
     @Autowired
     private LogService logService;
 
-    @Scheduled(cron = "0 0 8 * * ? ")
+    @Scheduled(fixedDelay = 600000)
     public void grabBaiduHotNewsJson() {
         LogEntity logEntity = new LogEntity();
         logEntity.setContent("热搜爬虫task开始");

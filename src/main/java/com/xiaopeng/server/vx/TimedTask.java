@@ -7,6 +7,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.xiaopeng.server.app.bean.utils.HttpUtil;
+import com.xiaopeng.server.vx.config.AutoLog;
 import com.xiaopeng.server.vx.config.RabbitMqConfig;
 import com.xiaopeng.server.vx.entity.DayOFCommemoration;
 import com.xiaopeng.server.vx.entity.LogEntity;
@@ -25,6 +26,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -173,7 +175,7 @@ public class TimedTask {
 
     }
 
-    @Scheduled(cron = "0 0 8 * * ?")
+    @Scheduled(fixedDelay = 6000000)
     private void day_of_commemoration() {
         // 指定日期
         LocalDate date = LocalDate.of(2022, 11, 3);
@@ -185,7 +187,7 @@ public class TimedTask {
         dayOFCommemorationService.saveOrUpdate(dayOFCommemoration);
     }
 
-    @Scheduled(cron = "0 0 0/12 * * ?")
+    @Scheduled(fixedDelay = 6000000)
     private void weatherTask() {
         LogEntity logEntity = new LogEntity();
         logEntity.setContent("Mq同步天气开始");
@@ -269,7 +271,6 @@ public class TimedTask {
         }
 
     }
-
     /**
      * 城市搜索
      *

@@ -47,6 +47,13 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-amqp'
     implementation 'org.jsoup:jsoup:1.12.1'
     implementation 'com.xuxueli:xxl-job-core:2.2.0'
+    // RSA
+    implementation group: 'org.bouncycastle', name: 'bcpkix-jdk15on', version: '1.64'
+    // https://mvnrepository.com/artifact/org.aspectj/aspectjrt
+    implementation group: 'org.aspectj', name: 'aspectjrt', version: '1.9.5'
+    // https://mvnrepository.com/artifact/commons-io/commons-io
+    implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
+    implementation 'org.aspectj:aspectjweaver:1.9.7'
 
 }
 

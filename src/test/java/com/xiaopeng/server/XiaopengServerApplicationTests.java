@@ -1,12 +1,16 @@
 package com.xiaopeng.server;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.crypto.SecureUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.xiaopeng.server.app.bean.common.SimpleDate;
 import com.xiaopeng.server.app.bean.pojo.User;
 import com.xiaopeng.server.app.bean.utils.CloneUtils;
 import com.xiaopeng.server.vx.NewsTask;
+import com.xiaopeng.server.vx.TimedTask;
+import com.xiaopeng.server.vx.config.AutoLog;
+import com.xiaopeng.server.vx.utils.RSAUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -234,4 +238,38 @@ class XiaopengServerApplicationTests {
         newsTask.grabBaiduHotNewsJson();
     }
 
+
+    @Test
+    public void testRSA(){
+
+            //解密数据
+            try {
+                //生成公钥和私钥
+                Map<Integer, String> keyMap = (Map<Integer, String>)RSAUtil.genKeyPair();
+                String publicKey = keyMap.get(0);
+                System.out.println("公钥:" + publicKey);
+                String privateKey = keyMap.get(1);
+                System.out.println("私钥:" + privateKey);
+
+                Map params = new HashMap();
+                params.put("cid", "kmdl11061");
+                params.put("cdate", "1571281896");
+                //参数进行字典排序, 待签名字符串
+                String sortStr = RSAUtil.getFormatParams(params);
+                // 使用md5算法加密待加密字符串并转为大写即为sign
+                String sign = SecureUtil.md5(sortStr).toUpperCase();
+
+                String orgData = "123456781668745014120123D";
+                System.out.println("原数据：" + orgData);
+                String encryptStr =RSAUtil.encrypt(orgData,publicKey);
+                System.out.println("加密结果：" + encryptStr);
+
+                String decryptStr = RSAUtil.decrypt(encryptStr,privateKey);
+                System.out.println("解密结果：" + decryptStr);
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+    }
 }

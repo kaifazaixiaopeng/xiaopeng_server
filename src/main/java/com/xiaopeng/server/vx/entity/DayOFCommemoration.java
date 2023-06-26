@@ -13,10 +13,10 @@ import lombok.Data;
  * @Remark:
  */
 @Data
-@TableName("day_of_commemoration")
+@TableName("user")
 public class DayOFCommemoration {
     @TableId(value = "id",type = IdType.AUTO)
     private Long id;
-    @TableField("number")
+    @TableField("text")
     private Long number;
 }

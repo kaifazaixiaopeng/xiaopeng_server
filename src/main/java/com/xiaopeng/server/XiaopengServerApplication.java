@@ -8,6 +8,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -19,8 +20,11 @@ import java.net.UnknownHostException;
 @SpringBootApplication
 @EnableScheduling
 @Configuration
+//@EnableSwagger2Doc
+//@EnableKnife4j
 @MapperScan(basePackages = {"com.xiaopeng.server.app.mapper"},annotationClass = MyBatisRepository.class)
 @EnableTransactionManagement
+@EnableAspectJAutoProxy
 public class XiaopengServerApplication {
 
     public static void main(String[] args) throws UnknownHostException {
