@@ -33,7 +33,7 @@ public class AutoLogAspect {
     public AutoLogAspect() {
     }
 
-    @Pointcut("@annotation(com.xiaopeng.server.vx.config.AutoLog))")
+    @Pointcut("@annotation(AutoLog))")
     public void logPointCut() {
         log.info("aop进来了");
     }
