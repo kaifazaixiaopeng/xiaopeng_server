@@ -39,10 +39,12 @@ public class MyController {
 
     /**
      * TODO 图形验证码
+     * 验证完成验证码后需要删除验证码
+     *              redisTemplate.delete("xiaopeng:server:" + verCode);
      */
     @GetMapping("/createCaptcha")
     public ResultBean createCaptcha(HttpServletRequest request, HttpServletResponse response) {
-        LineCaptcha lineCaptcha = CaptchaUtil.createLineCaptcha(130, 48);
+        LineCaptcha lineCaptcha = CaptchaUtil.createLineCaptcha(130, 48,5,0);
         lineCaptcha.setFont(new Font("Verdana", Font.PLAIN, 32));
         String verCode = lineCaptcha.getCode();
         log.info("验证码=====>{}",verCode);
