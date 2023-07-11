@@ -5,6 +5,7 @@ import cn.hutool.captcha.LineCaptcha;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaopeng.server.app.bean.common.ResultBean;
 import com.xiaopeng.server.vx.config.AutoLog;
+import com.xiaopeng.server.vx.service.ReplyMessageService;
 import com.xiaopeng.server.vx.utils.RSAUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
@@ -31,7 +33,7 @@ import java.util.concurrent.TimeUnit;
  * @Remark:
  */
 @RestController
-@RequestMapping("/demo")
+@RequestMapping("/wechart")
 @Slf4j
 public class MyController {
     @Autowired
@@ -44,6 +46,7 @@ public class MyController {
      */
     @GetMapping("/createCaptcha")
     public ResultBean createCaptcha(HttpServletRequest request, HttpServletResponse response) {
+        //宽 、高、 字数和干扰线条数
         LineCaptcha lineCaptcha = CaptchaUtil.createLineCaptcha(130, 48,5,0);
         lineCaptcha.setFont(new Font("Verdana", Font.PLAIN, 32));
         String verCode = lineCaptcha.getCode();
@@ -135,5 +138,22 @@ public class MyController {
             e.printStackTrace();
         }
         return jsonObject;
+    }
+
+    //回复微信消息接口
+    @PostMapping("/reply")
+    public void reply(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // 将请求、响应的编码均设置为UTF-8（防止中文乱码）
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+
+        // 调用消息业务类接收消息、处理消息
+        String respMessage="";
+//        String respMessage = replyMessageService.reply(request);
+
+        // 响应消息
+        PrintWriter out = response.getWriter();
+        out.print(respMessage);
+        out.close();
     }
 }

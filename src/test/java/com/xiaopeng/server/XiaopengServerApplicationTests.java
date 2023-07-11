@@ -1,5 +1,6 @@
 package com.xiaopeng.server;
 
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.NumberUtil;
@@ -18,6 +19,7 @@ import com.xiaopeng.server.vx.TimedTask;
 import com.xiaopeng.server.vx.config.AutoLog;
 import com.xiaopeng.server.vx.utils.RSAUtil;
 import groovy.util.logging.Slf4j;
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.jsoup.internal.StringUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -37,6 +39,9 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.*;
+import java.util.function.Function;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 @RunWith(SpringRunner.class)
@@ -400,5 +405,97 @@ class XiaopengServerApplicationTests {
         String code = "9H8ie";
         String s = code.toLowerCase();
         System.out.println(s);
+
+
+        BigDecimal bigDecimal1 = new BigDecimal("12.00");
+        BigDecimal bigDecimal2 = new BigDecimal("6");
+        BigDecimal result = bigDecimal2.divide(bigDecimal1, 2, BigDecimal.ROUND_HALF_UP);
+        System.out.println(result.stripTrailingZeros());
+        System.out.println(result.stripTrailingZeros().toPlainString());
+    }
+
+    @Test
+    public void testzhengze(){
+        String input = "<p id=\"w-e-element-5\" data-slate-node=\"element\" data-slate-fragment=\"JTVCJTdCJTIydHlwZSUyMiUzQSUyMnBhcmFncmFwaCUyMiUyQyUyMmNoaWxkcmVuJTIyJTNBJTVCJTdCJTIydGV4dCUyMiUzQSUyMiUyMiU3RCU1RCU3RCUyQyU3QiUyMnR5cGUlMjIlM0ElMjJwYXJhZ3JhcGglMjIlMkMlMjJjaGlsZHJlbiUyMiUzQSU1QiU3QiUyMnRleHQlMjIlM0ElMjIlMjIlN0QlNUQlN0QlMkMlN0IlMjJ0eXBlJTIyJTNBJTIycGFyYWdyYXBoJTIyJTJDJTIyY2hpbGRyZW4lMjIlM0ElNUIlN0IlMjJ0ZXh0JTIyJTNBJTIyJTIyJTdEJTVEJTdEJTJDJTdCJTIydHlwZSUyMiUzQSUyMnBhcmFncmFwaCUyMiUyQyUyMmNoaWxkcmVuJTIyJTNBJTVCJTdCJTIydGV4dCUyMiUzQSUyMiUyMiU3RCUyQyU3QiUyMnR5cGUlMjIlM0ElMjJpbWFnZSUyMiUyQyUyMnNyYyUyMiUzQSUyMiU1Q3IlNUNuaHR0cCUzQSUyRiUyRnN0YXRpYy5iYWlpbmZvLmNuJTJGaW1hZ2UlMkYyMDIzMDYyMCUyRjIwMjMwNjIwMTc0MTE3XzYzNTIucG5nJTVDciU1Q24lMjIlMkMlMjJhbHQlMjIlM0ElMjIlMjIlMkMlMjJocmVmJTIyJTNBJTIyJTIyJTJDJTIyc3R5bGUlMjIlM0ElN0IlMjJ3aWR0aCUyMiUzQSUyMiUyMiUyQyUyMmhlaWdodCUyMiUzQSUyMiUyMiU3RCUyQyUyMmNoaWxkcmVuJTIyJTNBJTVCJTdCJTIydGV4dCUyMiUzQSUyMiUyMiU3RCU1RCU3RCUyQyU3QiUyMnRleHQlMjIlM0ElMjIlMjIlN0QlNUQlN0QlNUQ=\">\n" +
+                "</p>\n" +
+                "<p id=\"w-e-element-7\" data-slate-node=\"element\">\n" +
+                "</p>\n" +
+                "<p id=\"w-e-element-11\" data-slate-node=\"element\">\n" +
+                "</p>\n" +
+                "<p id=\"w-e-element-3\" data-slate-node=\"element\">\n" +
+                "</p>\n" +
+                "<p>\n" +
+                "<br>\n" +
+                "</p>\n" +
+                "<p>\n" +
+                "&nbsp;\n" +
+                "</p>\n" +
+                "<p>\n" +
+                "<br>\n" +
+                "</p>\n" +
+                "<div id=\"w-e-image-container-14\" class=\"w-e-image-container\">\n" +
+                "<img style=\"max-width: 100%\" src=\"http://static.baiinfo.com/image&#13;&#10;/20230629/20230629153231_1614.png\" alt=\"\">\n" +
+                "</div>\n" +
+                "<p>\n" +
+                "<img style=\"max-width: 100%\" src=\"http://static.baiinfo.com/image&#13;&#10;/20230629/20230629153231_1614.png\" alt=\"\">\n" +
+                "</p>\n" +
+                "<p>\n" +
+                "</p>\n" +
+                "<p>\n" +
+                "</p>";
+//        String regex = "<img[^>]+src\\s*=\\s*['\"]([^'\"]+)['\"][^>]*>";
+//        Pattern pattern = Pattern.compile(regex);
+//        Matcher matcher = pattern.matcher(input);
+//        List<String> srcList = new ArrayList<>();
+//        while (matcher.find()) {
+//            String srcValue = matcher.group(1);
+//            srcList.add(srcValue);
+//        }
+//        System.out.println("1====>"+JSONObject.toJSONString(srcList));
+
+        Pattern pua = Pattern.compile("src=\\\"(.*?)\\\"");
+        Matcher mat = pua.matcher(input);
+
+        List<String> srcList = new ArrayList<>();
+        while (mat.find()) {
+            String src = mat.group(1);
+            srcList.add(src);
+        }
+        System.out.println("2====>"+JSONObject.toJSONString(srcList));
+
+        String[] strArr=new String[]{"&nbsp;","&emsp;","&#09;","<br>","<br/>","&#13;&#10;"};
+        List<String> result = srcList.stream()
+                .map(item -> {
+                    for (String i : strArr) {
+                        item = item.replaceAll(Pattern.quote(i), "");
+                    }
+                    return item;
+                })
+                .collect(Collectors.toList());
+        System.out.println(JSONObject.toJSONString(result));
+    }
+
+    @Test
+    public void getDate(){
+//        Date parse = DateUtil.parse("2023-01-05");
+//        String dateTime = DateUtil.format(DateUtil.beginOfDay(DateUtil.offsetDay(parse, -30)), "yyyy-MM-dd");
+//        System.out.println(dateTime);
+//        String s1="2023-07-06";
+//        String s2="2023-07-05";
+//        String s3="2023-07-07";
+//        String s4="2023-07-08";
+//        List<String> list=new ArrayList<>();
+//        list.add(s1);
+//        list.add(s2);
+//        list.add(s3);
+//        list.add(s4);
+//        List<String> collect = list.stream().sorted().collect(Collectors.toList());
+//        System.out.println(JSONObject.toJSONString(collect));
+//        String name="baiinfo.png";
+//        String substring = name.substring(name.lastIndexOf("."));
+//        System.out.println(substring);
+        String text="   jaifjaja";
+        text=text.trim();
+        System.out.println(text);
     }
 }
