@@ -54,7 +54,6 @@ dependencies {
     // https://mvnrepository.com/artifact/commons-io/commons-io
     implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
     implementation 'org.aspectj:aspectjweaver:1.9.7'
-    implementation 'io.minio:minio:8.3.7'
 
 
 }
