@@ -3,6 +3,7 @@ package com.xiaopeng.server.vx.utils;
 
 import io.minio.*;
 import io.minio.messages.Bucket;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.FastByteArrayOutputStream;
 
@@ -16,7 +17,7 @@ import java.util.List;
 @Component
 public class AppMinioUtil {
 
-    @Resource
+    @Autowired
     private MinioClient minioClient;
 
 

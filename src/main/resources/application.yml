@@ -53,6 +53,4 @@ spring:
 #  mapper-locations: classpath*:/mybatis/*.xml
 #  configuration:
 #    map-underscore-to-camel-case: true
-wechatConfig:
-  appId: wxb5eeda5a280edb34
-  appSecret: 9e433dbfcb935544a82e5078508311aa
+
