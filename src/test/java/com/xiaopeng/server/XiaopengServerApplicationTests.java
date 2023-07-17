@@ -494,8 +494,12 @@ class XiaopengServerApplicationTests {
 //        String name="baiinfo.png";
 //        String substring = name.substring(name.lastIndexOf("."));
 //        System.out.println(substring);
-        String text="   jaifjaja";
-        text=text.trim();
-        System.out.println(text);
+//        String text="   jaifjaja";
+//        text=text.trim();
+//        System.out.println(text);
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.put("news","id");
+        Object news = jsonObject.get("news");
+        System.out.println(JSONObject.toJSONString(news));
     }
 }
