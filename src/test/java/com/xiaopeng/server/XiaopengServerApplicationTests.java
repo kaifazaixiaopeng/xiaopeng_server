@@ -24,6 +24,7 @@ import org.jsoup.internal.StringUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -377,29 +378,29 @@ class XiaopengServerApplicationTests {
 //        LocalDate localDate = getLocalDateByCategory(2023, 27, 7L);
 //        System.out.println(localDate);
         String s = "{\"showChildren\":true,\"name\":\"tabView\",\"class\":\"box-50\",\"articleId\":\"22,23,25\",\"showType\":\"33\"}";
-        Map<String,Object> map = JSONUtil.parseObj(s, true);
+        Map<String, Object> map = JSONUtil.parseObj(s, true);
         System.out.println(JSONObject.toJSONString(map));
         System.out.println(map.get("articleId")); // 输出：2023-12-31
         String articleId = map.get("articleId").toString();
-        if(articleId.contains(",")){
+        if (articleId.contains(",")) {
             String[] split = articleId.split(",");
             List<String> strings = new ArrayList<>(Arrays.asList(split));
             System.out.println(JSONObject.toJSONString(strings));
         }
     }
 
-    public static LocalDate getLocalDateByCategory(Integer year, Integer week, long newValue){
-        WeekFields weekFields=  WeekFields.of(DayOfWeek.SATURDAY,3);
+    public static LocalDate getLocalDateByCategory(Integer year, Integer week, long newValue) {
+        WeekFields weekFields = WeekFields.of(DayOfWeek.SATURDAY, 3);
         LocalDate now = LocalDate.now();
-        LocalDate localDate = now.withYear(year).with(weekFields.weekOfYear(),week);
-        LocalDate goalLocalDate  = localDate.with(weekFields.dayOfWeek(), newValue);
+        LocalDate localDate = now.withYear(year).with(weekFields.weekOfYear(), week);
+        LocalDate goalLocalDate = localDate.with(weekFields.dayOfWeek(), newValue);
         return goalLocalDate;
     }
 
     @Test
-    public void testverCode(){
+    public void testverCode() {
         String verCode = "BAIINFO";
-        if("baiinfo".equalsIgnoreCase(verCode)){
+        if ("baiinfo".equalsIgnoreCase(verCode)) {
             System.out.println("校验成功");
         }
         String code = "9H8ie";
@@ -415,7 +416,7 @@ class XiaopengServerApplicationTests {
     }
 
     @Test
-    public void testzhengze(){
+    public void testzhengze() {
         String input = "<p id=\"w-e-element-5\" data-slate-node=\"element\" data-slate-fragment=\"JTVCJTdCJTIydHlwZSUyMiUzQSUyMnBhcmFncmFwaCUyMiUyQyUyMmNoaWxkcmVuJTIyJTNBJTVCJTdCJTIydGV4dCUyMiUzQSUyMiUyMiU3RCU1RCU3RCUyQyU3QiUyMnR5cGUlMjIlM0ElMjJwYXJhZ3JhcGglMjIlMkMlMjJjaGlsZHJlbiUyMiUzQSU1QiU3QiUyMnRleHQlMjIlM0ElMjIlMjIlN0QlNUQlN0QlMkMlN0IlMjJ0eXBlJTIyJTNBJTIycGFyYWdyYXBoJTIyJTJDJTIyY2hpbGRyZW4lMjIlM0ElNUIlN0IlMjJ0ZXh0JTIyJTNBJTIyJTIyJTdEJTVEJTdEJTJDJTdCJTIydHlwZSUyMiUzQSUyMnBhcmFncmFwaCUyMiUyQyUyMmNoaWxkcmVuJTIyJTNBJTVCJTdCJTIydGV4dCUyMiUzQSUyMiUyMiU3RCUyQyU3QiUyMnR5cGUlMjIlM0ElMjJpbWFnZSUyMiUyQyUyMnNyYyUyMiUzQSUyMiU1Q3IlNUNuaHR0cCUzQSUyRiUyRnN0YXRpYy5iYWlpbmZvLmNuJTJGaW1hZ2UlMkYyMDIzMDYyMCUyRjIwMjMwNjIwMTc0MTE3XzYzNTIucG5nJTVDciU1Q24lMjIlMkMlMjJhbHQlMjIlM0ElMjIlMjIlMkMlMjJocmVmJTIyJTNBJTIyJTIyJTJDJTIyc3R5bGUlMjIlM0ElN0IlMjJ3aWR0aCUyMiUzQSUyMiUyMiUyQyUyMmhlaWdodCUyMiUzQSUyMiUyMiU3RCUyQyUyMmNoaWxkcmVuJTIyJTNBJTVCJTdCJTIydGV4dCUyMiUzQSUyMiUyMiU3RCU1RCU3RCUyQyU3QiUyMnRleHQlMjIlM0ElMjIlMjIlN0QlNUQlN0QlNUQ=\">\n" +
                 "</p>\n" +
                 "<p id=\"w-e-element-7\" data-slate-node=\"element\">\n" +
@@ -461,9 +462,9 @@ class XiaopengServerApplicationTests {
             String src = mat.group(1);
             srcList.add(src);
         }
-        System.out.println("2====>"+JSONObject.toJSONString(srcList));
+        System.out.println("2====>" + JSONObject.toJSONString(srcList));
 
-        String[] strArr=new String[]{"&nbsp;","&emsp;","&#09;","<br>","<br/>","&#13;&#10;"};
+        String[] strArr = new String[]{"&nbsp;", "&emsp;", "&#09;", "<br>", "<br/>", "&#13;&#10;"};
         List<String> result = srcList.stream()
                 .map(item -> {
                     for (String i : strArr) {
@@ -476,7 +477,7 @@ class XiaopengServerApplicationTests {
     }
 
     @Test
-    public void getDate(){
+    public void getDate() {
 //        Date parse = DateUtil.parse("2023-01-05");
 //        String dateTime = DateUtil.format(DateUtil.beginOfDay(DateUtil.offsetDay(parse, -30)), "yyyy-MM-dd");
 //        System.out.println(dateTime);
@@ -498,8 +499,51 @@ class XiaopengServerApplicationTests {
 //        text=text.trim();
 //        System.out.println(text);
         JSONObject jsonObject = new JSONObject();
-        jsonObject.put("news","id");
+        jsonObject.put("news", "id");
         Object news = jsonObject.get("news");
         System.out.println(JSONObject.toJSONString(news));
+    }
+
+    @Test
+    public void dnf() {
+        BigDecimal count = BigDecimal.valueOf(368*2 + 368 * 0.7);
+        System.out.println(count);
+        BigDecimal s = count.multiply(BigDecimal.valueOf(1000000 / 1.9));
+        System.out.println(s.setScale(0, BigDecimal.ROUND_UP));
+        System.out.println(4000000 * 60 + (250000 * 25 + 200000 * 25) * 8);
+        int i = 28  +8+ 4 + 20 + 8  + 3 + 5 + 4 + 6 + 6 + 3 + 4;
+        System.out.println("花花：" + i);
+    }
+
+    @Test
+    public void test0718() {
+        Integer[] arrs = new Integer[]{2, 3, 1, 2, 11274, 130791, 15270, 15273, 15274, 15275, 15276, 15273, 15274, 15275, 15276, 14584, 15289, 15290, 15291, 16968713, 131798, 11306, 11314, 128714, 12879, 128806, 14276, 14264, 131759, 10138, 11314, 11306, 128806, 14264, 99, 666, 121, 15151, 14264, 131798, 11306, 16709, 16709, 131798, 11306, 11314, 16709, 11306, 131798, 1, 123123, 14264, 11306, 11314, 131798, 2297, 128806, 11306, 131798, 2297, 14264, 14276, 14264, 14276, 14264, 1, 2, 1, 1, 14264, 14276, 14264, 14276, 12, 10, 1, 1, 1, 1, 23, 1, 1, 1, 2, 3, 1, 2, 3, 2, 1, 1, 1, 1, 11314, 131798, 1, 11314, 12879, 131798, 1, 1, 3, 14264, 14264, 14276, 131798, 9999, 2212, 14264, 131798, 5817, 14449, 14450, 14452, 5817, 14449, 14450, 14584, 14625, 14584, 14584, 14584, 14625, 14268, 14270, 14388, 14448, 2297, 2212, 130427, 2365, 11318, 13841, 11314, 11318, 13841, 11314, 14625, 14264, 14625, 131798, 131798, 12847, 2212, 2212, 131798};
+        List<Integer> arrayList = new ArrayList<Integer>(Arrays.asList(arrs));
+        List<Integer> collect = arrayList.stream().distinct().collect(Collectors.toList());
+        System.out.println(JSONObject.toJSONString(collect));
+        System.out.println(JSONObject.toJSONString(arrs.length));
+        System.out.println(JSONObject.toJSONString(collect.size()));
+    }
+
+    @Test
+    public void testMap() {
+        //判断字符串是否为数字类型
+        System.out.println(isNumber("73.278"));
+    }
+
+    public static boolean isNumber(String str) {
+        if (StringUtils.isBlank(str)) {
+            return false;
+        }
+        String reg = "^-?[0-9]+(\\.[0-9]+)?$";
+        return str.matches(reg);
+    }
+
+    @Value("${wechatConfig.appSecret}")
+    private List<Integer> ids;
+
+    @Test
+    public void testMap1() {
+        System.out.println(ids);
     }
 }

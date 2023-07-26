@@ -40,7 +40,7 @@ public class NewsTask {
     @Autowired
     private LogService logService;
 
-    @Scheduled(fixedDelay = 6000)
+    @Scheduled(fixedDelay = 1200000)
     public void grabBaiduHotNewsJson() {
         LogEntity logEntity = new LogEntity();
         logEntity.setContent("热搜爬虫task开始");
@@ -90,6 +90,7 @@ public class NewsTask {
             e.printStackTrace();
         }
     }
+
 //    @Scheduled(fixedDelay = 60000)
 //    public void getWeiboHot() {
 ////        LogEntity logEntity = new LogEntity();

@@ -55,4 +55,4 @@ spring:
 #    map-underscore-to-camel-case: true
 wechatConfig:
   appId: 1
-  appSecret: 2
+  appSecret: 2,3,4
