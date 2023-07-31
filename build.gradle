@@ -54,7 +54,8 @@ dependencies {
     // https://mvnrepository.com/artifact/commons-io/commons-io
     implementation group: 'commons-io', name: 'commons-io', version: '2.11.0'
     implementation 'org.aspectj:aspectjweaver:1.9.7'
-
+    implementation 'cloud.tianai.captcha:tianai-captcha-springboot-starter:1.4.1'
+    implementation 'com.github.whvcse:easy-captcha:1.6.2'
 
 }
 

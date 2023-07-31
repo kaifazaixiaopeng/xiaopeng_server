@@ -36,31 +36,7 @@ import java.util.concurrent.TimeUnit;
 @RequestMapping("/wechart")
 @Slf4j
 public class MyController {
-    @Autowired
-    private RedisTemplate<String, String> redisTemplate;
 
-    /**
-     * TODO 图形验证码
-     * 验证完成验证码后需要删除验证码
-     *              redisTemplate.delete("xiaopeng:server:" + verCode);
-     */
-    @GetMapping("/createCaptcha")
-    public ResultBean createCaptcha(HttpServletRequest request, HttpServletResponse response) {
-        //宽 、高、 字数和干扰线条数
-        LineCaptcha lineCaptcha = CaptchaUtil.createLineCaptcha(130, 48,5,0);
-        lineCaptcha.setFont(new Font("Verdana", Font.PLAIN, 32));
-        String verCode = lineCaptcha.getCode();
-        log.info("验证码=====>{}",verCode);
-        try {
-            redisTemplate.opsForValue().set("xiaopeng:server:" + verCode, verCode, 10L, TimeUnit.MINUTES);
-            lineCaptcha.write(response.getOutputStream());
-            response.getOutputStream().close();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return ResultBean.fail("fail",e.getMessage());
-        }
-        return ResultBean.of(200,"success",null);
-    }
 
     @PostMapping("/delete")
     public void delete(@RequestParam("ids") List<Integer> ids){
