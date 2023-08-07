@@ -3,6 +3,7 @@ package com.xiaopeng.server.app.bean.pojo;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * @Auto:BUGPeng
@@ -14,4 +15,6 @@ import java.io.Serializable;
 public class User implements Serializable {
     private int id;
     private String name;
+    private String openDate;
+    private String endDate;
 }

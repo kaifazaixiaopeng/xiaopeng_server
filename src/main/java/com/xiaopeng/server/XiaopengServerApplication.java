@@ -12,6 +12,9 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -20,12 +23,10 @@ import java.net.UnknownHostException;
 @SpringBootApplication
 @EnableScheduling
 @Configuration
-//@EnableSwagger2Doc
-//@EnableKnife4j
 @MapperScan(basePackages = {"com.xiaopeng.server.app.mapper"},annotationClass = MyBatisRepository.class)
 @EnableTransactionManagement
 @EnableAspectJAutoProxy
-public class XiaopengServerApplication {
+public class XiaopengServerApplication implements WebMvcConfigurer {
 
     public static void main(String[] args) throws UnknownHostException {
         ConfigurableApplicationContext run = SpringApplication.run(XiaopengServerApplication.class, args);
@@ -35,7 +36,7 @@ public class XiaopengServerApplication {
         log.info("\n=======================================================\n\t" +
                 "Local: \t\thttp://localhost:{}\n\t" +
                 "External: \thttp://{}:{}\n\t" +
-                "Doc: \thttp://{}:{}{}/doc.html\n" +
+                "Swagger-UI: http://{}:{}{}/doc.html\n" +
                 "\t---xiaopeng_server started successfully\n" +
                 "\t---小鹏的服务启动成功---\n" +
                 "==========================================================",

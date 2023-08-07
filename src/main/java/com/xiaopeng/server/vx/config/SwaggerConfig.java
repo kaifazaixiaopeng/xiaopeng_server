@@ -1,74 +1,60 @@
-//package com.xiaopeng.server.vx.config;
-//
-//import lombok.Data;
-//import org.springframework.boot.context.properties.ConfigurationProperties;
-//import org.springframework.context.annotation.Bean;
-//import org.springframework.context.annotation.Configuration;
-//import springfox.documentation.builders.ApiInfoBuilder;
-//import springfox.documentation.builders.PathSelectors;
-//import springfox.documentation.builders.RequestHandlerSelectors;
-//import springfox.documentation.service.ApiInfo;
-//import springfox.documentation.service.Contact;
-//import springfox.documentation.spi.DocumentationType;
-//import springfox.documentation.spring.web.plugins.Docket;
-//import springfox.documentation.swagger2.annotations.EnableSwagger2;
-//
-//import java.util.ArrayList;
-//import java.util.LinkedHashMap;
-//import java.util.List;
-//import java.util.Map;
-//
-///**
-// * @ClassName: SwaggerConfig
-// * @Author: BUG-WZP
-// * @Since: 2023/6/15
-// * @Remark:
-// */
-//@Data
-//@ConfigurationProperties(prefix = "pinda.swagger")
-//public class SwaggerConfig {
-//    /*
-//     *配置属性类，用于封装接口文档相关属性，从配置文件读取信息封装成当前对象
-//     */
-//        private String title = "在线文档"; //标题
-//        private String group = ""; //自定义组名
-//        private String description = "在线文档"; //描述
-//        private String version = "1.0"; //版本
-//        private Contact contact = new Contact(); //联系人
-//        private String basePackage = "com.itheima.pinda"; //swagger会解析的包路径
-//        private List<String> basePath = new ArrayList<>(); //swagger会解析的url规则
-//        private List<String> excludePath = new ArrayList<>();//在basePath基础上需要排除的url规则
-//        private Map<String, DocketInfo> docket = new LinkedHashMap<>(); //分组文档
-//        public String getGroup() {
-//            if (group == null || "".equals(group)) {
-//                return title;
-//            }
-//            return group;
-//        }
-//        @Data
-//        public static class DocketInfo {
-//            private String title = "在线文档"; //标题
-//            private String group = ""; //自定义组名
-//            private String description = "在线文档"; //描述
-//            private String version = "1.0"; //版本
-//            private Contact contact = new Contact(); //联系人
-//            private String basePackage = ""; //swagger会解析的包路径
-//            private List<String> basePath = new ArrayList<>(); //swagger会解析的url规则
-//            private List<String> excludePath = new ArrayList<>();//在basePath基础上需要排除的url
-//            public String getGroup() {
-//                if (group == null || "".equals(group)) {
-//                    return title;
-//                }
-//                return group;
-//            }
-//        }
-//        @Data
-//        public static class Contact {
-//            private String name = "pinda"; //联系人
-//            private String url = ""; //联系人url
-//            private String email = ""; //联系人email
-//        }
-//    }
-//
-//
-//}
+package com.xiaopeng.server.vx.config;
+
+import io.swagger.annotations.ApiOperation;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import springfox.documentation.builders.ApiInfoBuilder;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Contact;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2WebMvc;
+
+/**
+ * @ClassName: SwaggerConfig
+ * @Author: BUG-WZP
+ * @Since: 2023/6/15
+ * @Remark:
+ */
+@Configuration
+@EnableSwagger2WebMvc
+public class SwaggerConfig {
+    @Bean(value = "defaultApi2")
+    public Docket defaultApi2() {
+
+        Docket docket = new Docket(DocumentationType.SWAGGER_2)
+                // 是否启用Swagger
+                .enable(true)
+                //分组名称
+                .groupName("1.0版本")
+                // 用来创建该API的基本信息，展示在文档的页面中（自定义展示的信息）
+                .apiInfo(apiInfo())
+                // 设置哪些接口暴露给Swagger展示
+                .select()
+                // 扫描所有有注解的api，用这种方式更灵活
+                .apis(RequestHandlerSelectors.withMethodAnnotation(ApiOperation.class))
+                //指定Controller扫描包路径
+//                .apis(RequestHandlerSelectors.basePackage("com.example.controller"))
+                // 扫描所有
+//                .apis(RequestHandlerSelectors.any())
+                .build();
+        return docket;
+    }
+
+    /**
+     * swagger声明项目信息
+     *
+     * @return
+     */
+    private ApiInfo apiInfo() {
+        String name = "xiaopeng";
+        Contact contact = new Contact(name, "", "");
+        return new ApiInfoBuilder()
+                .title("xiaopeng-server")
+                .description("xiaopeng-server接口文档描述")
+                .version("1.0")//版本
+                .contact(contact)
+                .build();
+    }
+}

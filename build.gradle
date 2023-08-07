@@ -35,7 +35,7 @@ dependencies {
     //FTP
     implementation group: 'com.jcraft', name: 'jsch', version: '0.1.54'
     //hutool
-    implementation 'cn.hutool:hutool-all:4.6.11'
+    implementation 'cn.hutool:hutool-all:5.7.20'
     // https://mvnrepository.com/artifact/org.junit.platform/junit-platform-launcher
     testImplementation group: 'org.junit.platform', name: 'junit-platform-launcher', version: '1.8.2'
 
@@ -56,6 +56,9 @@ dependencies {
     implementation 'org.aspectj:aspectjweaver:1.9.7'
     implementation 'cloud.tianai.captcha:tianai-captcha-springboot-starter:1.4.1'
     implementation 'com.github.whvcse:easy-captcha:1.6.2'
+    implementation'com.github.xiaoymin:knife4j-spring-boot-starter:2.0.9'
+
+
 
 }
 

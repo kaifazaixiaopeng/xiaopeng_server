@@ -22,12 +22,16 @@ import cloud.tianai.captcha.validator.impl.BasicCaptchaTrackValidator;
 import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.LineCaptcha;
 import cn.hutool.core.map.MapUtil;
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.wf.captcha.SpecCaptcha;
 import com.xiaopeng.server.app.bean.common.ResultBean;
 import com.xiaopeng.server.vx.entity.ImageCaptchaTrackDto;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.bind.annotation.*;
@@ -36,9 +40,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
 import java.math.BigDecimal;
-import java.util.Map;
-import java.util.UUID;
+import java.text.SimpleDateFormat;
+import java.util.*;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 /**
  * @ClassName: Captcha
@@ -47,8 +53,9 @@ import java.util.concurrent.TimeUnit;
  * @Remark: 验证码
  */
 @RestController
-@RequestMapping("/Captcha")
+@RequestMapping("/Captcha/")
 @Slf4j
+@Api(tags = "验证码")
 public class CaptchaController {
     @Autowired
     private RedisTemplate<String, String> redisTemplate;
@@ -59,6 +66,7 @@ public class CaptchaController {
      * redisTemplate.delete("xiaopeng:server:" + verCode);
      */
     @GetMapping("/createCaptcha")
+    @ApiOperation("hutool类生成图形验证码")
     public ResultBean createCaptcha(HttpServletRequest request, HttpServletResponse response) {
         //宽 、高、 字数和干扰线条数
         LineCaptcha lineCaptcha = CaptchaUtil.createLineCaptcha(130, 48, 5, 0);
@@ -84,6 +92,7 @@ public class CaptchaController {
      * @return
      */
     @GetMapping("/captcha")
+    @ApiOperation("文件流二进制验证码")
     public ResultBean captcha() {
 //        EasySpecCaptcha specCaptcha = new EasySpecCaptcha(130, 48, 5);
         SpecCaptcha specCaptcha = new SpecCaptcha(130, 48, 5);
@@ -108,6 +117,7 @@ public class CaptchaController {
     }
     public static final Float tolerant=0.02f;
     @PostMapping("/huadongCap")
+    @ApiOperation("滑动验证码")
     public ImageCaptchaInfo huadongCap(){
         ImageCaptchaResourceManager imageCaptchaResourceManager = new DefaultImageCaptchaResourceManager();
         ResourceStore resourceStore = imageCaptchaResourceManager.getResourceStore();
@@ -135,6 +145,7 @@ public class CaptchaController {
         return imageCaptchaInfo;
     }
     @PostMapping("/authCap")
+    @ApiOperation("滑动验证码校验")
     public Boolean authCap(@RequestBody ImageCaptchaTrackDto dto) {
         BasicCaptchaTrackValidator sliderCaptchaValidator = new BasicCaptchaTrackValidator();
         Map<String, Object> map ;

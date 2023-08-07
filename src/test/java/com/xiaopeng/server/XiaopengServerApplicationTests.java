@@ -1,7 +1,6 @@
 package com.xiaopeng.server;
 
 import cloud.tianai.captcha.common.constant.CaptchaTypeConstant;
-import cloud.tianai.captcha.common.response.ApiResponse;
 import cloud.tianai.captcha.generator.ImageCaptchaGenerator;
 import cloud.tianai.captcha.generator.ImageTransform;
 import cloud.tianai.captcha.generator.common.model.dto.ImageCaptchaInfo;
@@ -9,20 +8,11 @@ import cloud.tianai.captcha.generator.impl.MultiImageCaptchaGenerator;
 import cloud.tianai.captcha.generator.impl.transform.Base64ImageTransform;
 import cloud.tianai.captcha.resource.ImageCaptchaResourceManager;
 import cloud.tianai.captcha.resource.impl.DefaultImageCaptchaResourceManager;
-import cloud.tianai.captcha.spring.application.ImageCaptchaApplication;
-import cloud.tianai.captcha.spring.vo.CaptchaResponse;
-import cloud.tianai.captcha.spring.vo.ImageCaptchaVO;
 import cloud.tianai.captcha.validator.ImageCaptchaValidator;
-import cloud.tianai.captcha.validator.common.model.dto.ImageCaptchaTrack;
 import cloud.tianai.captcha.validator.impl.BasicCaptchaTrackValidator;
-import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
-import cn.hutool.core.map.MapUtil;
-import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.crypto.SecureUtil;
 import cn.hutool.json.JSONUtil;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
@@ -30,12 +20,7 @@ import com.xiaopeng.server.app.bean.common.SimpleDate;
 import com.xiaopeng.server.app.bean.pojo.User;
 import com.xiaopeng.server.app.bean.utils.CloneUtils;
 import com.xiaopeng.server.vx.NewsTask;
-import com.xiaopeng.server.vx.TimedTask;
-import com.xiaopeng.server.vx.config.AutoLog;
-import com.xiaopeng.server.vx.utils.RSAUtil;
 import groovy.util.logging.Slf4j;
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.jsoup.internal.StringUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +40,6 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.WeekFields;
 import java.util.*;
-import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -283,39 +267,39 @@ class XiaopengServerApplicationTests {
     }
 
 
-    @Test
-    public void testRSA() {
-
-        //解密数据
-        try {
-            //生成公钥和私钥
-            Map<Integer, String> keyMap = (Map<Integer, String>) RSAUtil.genKeyPair();
-            String publicKey = keyMap.get(0);
-            System.out.println("公钥:" + publicKey);
-            String privateKey = keyMap.get(1);
-            System.out.println("私钥:" + privateKey);
-
-            Map params = new HashMap();
-            params.put("cid", "kmdl11061");
-            params.put("cdate", "1571281896");
-            //参数进行字典排序, 待签名字符串
-            String sortStr = RSAUtil.getFormatParams(params);
-            // 使用md5算法加密待加密字符串并转为大写即为sign
-            String sign = SecureUtil.md5(sortStr).toUpperCase();
-
-            String orgData = "123456781668745014120123D";
-            System.out.println("原数据：" + orgData);
-            String encryptStr = RSAUtil.encrypt(orgData, publicKey);
-            System.out.println("加密结果：" + encryptStr);
-
-            String decryptStr = RSAUtil.decrypt(encryptStr, privateKey);
-            System.out.println("解密结果：" + decryptStr);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
+//    @Test
+//    public void testRSA() {
+//
+//        //解密数据
+//        try {
+//            //生成公钥和私钥
+//            Map<Integer, String> keyMap = (Map<Integer, String>) RSAUtil.genKeyPair();
+//            String publicKey = keyMap.get(0);
+//            System.out.println("公钥:" + publicKey);
+//            String privateKey = keyMap.get(1);
+//            System.out.println("私钥:" + privateKey);
+//
+//            Map params = new HashMap();
+//            params.put("cid", "kmdl11061");
+//            params.put("cdate", "1571281896");
+//            //参数进行字典排序, 待签名字符串
+//            String sortStr = RSAUtil.getFormatParams(params);
+//            // 使用md5算法加密待加密字符串并转为大写即为sign
+//            String sign = SecureUtil.md5(sortStr).toUpperCase();
+//
+//            String orgData = "123456781668745014120123D";
+//            System.out.println("原数据：" + orgData);
+//            String encryptStr = RSAUtil.encrypt(orgData, publicKey);
+//            System.out.println("加密结果：" + encryptStr);
+//
+//            String decryptStr = RSAUtil.decrypt(encryptStr, privateKey);
+//            System.out.println("解密结果：" + decryptStr);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//
+//    }
 
     @Test
     public void demo() {
@@ -359,8 +343,8 @@ class XiaopengServerApplicationTests {
 //        nf.setMinimumFractionDigits(2);
 //        String percentStr = nf.format(num);
 //        System.out.println(percentStr);
-        BigDecimal bigDecimal = new BigDecimal(-0.21);
-        BigDecimal bigDecimal2 = new BigDecimal(0.21);
+        BigDecimal bigDecimal = BigDecimal.valueOf(-0.21);
+        BigDecimal bigDecimal2 = new BigDecimal("0.21");
         BigDecimal subtract = bigDecimal.subtract(bigDecimal2);
         NumberFormat nf = NumberFormat.getPercentInstance();
         nf.setMinimumFractionDigits(2);
@@ -513,6 +497,9 @@ class XiaopengServerApplicationTests {
 //        String text="   jaifjaja";
 //        text=text.trim();
 //        System.out.println(text);
+        /**
+         *
+         */
         JSONObject jsonObject = new JSONObject();
         jsonObject.put("news", "id");
         Object news = jsonObject.get("news");
@@ -521,19 +508,22 @@ class XiaopengServerApplicationTests {
 
     @Test
     public void dnf() {
-        BigDecimal count = BigDecimal.valueOf(368 * 2 + 368 * 0.7);
+        BigDecimal count = BigDecimal.valueOf(368 * 2 + 368 * 0.7+398*0.9*4+398*0.7);
         System.out.println(count);
-        BigDecimal s = count.multiply(BigDecimal.valueOf(1000000 / 1.9));
+        BigDecimal s = count.multiply(BigDecimal.valueOf(1000000 / 1.88));
         System.out.println(s.setScale(0, BigDecimal.ROUND_UP));
-        System.out.println(4000000 * 60 + (250000 * 25 + 200000 * 25) * 8);
-        int i = 28 + 8 + 4 + 20 + 8 + 3 + 5 + 4 + 6 + 6 + 3 + 4;
+        System.out.println(4000000 * 150 + (10000000) * 8*5);
+        int i = 28+24+4+3+8+8+20+3+4+6+6+4+5+3;
+        int mingw=42902+350+350+700+350;
         System.out.println("花花：" + i);
+        System.out.println("花花：" + mingw);
+        System.out.println(1000000/1.88);
     }
 
     @Test
     public void test0718() {
         Integer[] arrs = new Integer[]{2, 3, 1, 2, 11274, 130791, 15270, 15273, 15274, 15275, 15276, 15273, 15274, 15275, 15276, 14584, 15289, 15290, 15291, 16968713, 131798, 11306, 11314, 128714, 12879, 128806, 14276, 14264, 131759, 10138, 11314, 11306, 128806, 14264, 99, 666, 121, 15151, 14264, 131798, 11306, 16709, 16709, 131798, 11306, 11314, 16709, 11306, 131798, 1, 123123, 14264, 11306, 11314, 131798, 2297, 128806, 11306, 131798, 2297, 14264, 14276, 14264, 14276, 14264, 1, 2, 1, 1, 14264, 14276, 14264, 14276, 12, 10, 1, 1, 1, 1, 23, 1, 1, 1, 2, 3, 1, 2, 3, 2, 1, 1, 1, 1, 11314, 131798, 1, 11314, 12879, 131798, 1, 1, 3, 14264, 14264, 14276, 131798, 9999, 2212, 14264, 131798, 5817, 14449, 14450, 14452, 5817, 14449, 14450, 14584, 14625, 14584, 14584, 14584, 14625, 14268, 14270, 14388, 14448, 2297, 2212, 130427, 2365, 11318, 13841, 11314, 11318, 13841, 11314, 14625, 14264, 14625, 131798, 131798, 12847, 2212, 2212, 131798};
-        List<Integer> arrayList = new ArrayList<Integer>(Arrays.asList(arrs));
+        List<Integer> arrayList = new ArrayList<>(Arrays.asList(arrs));
         List<Integer> collect = arrayList.stream().distinct().collect(Collectors.toList());
         System.out.println(JSONObject.toJSONString(collect));
         System.out.println(JSONObject.toJSONString(arrs.length));
@@ -545,8 +535,7 @@ class XiaopengServerApplicationTests {
         //判断字符串是否为数字类型
         System.out.println(isNumber("73.278"));
     }
-
-    public static boolean isNumber(String str) {
+    boolean isNumber(String str) {
         if (StringUtils.isBlank(str)) {
             return false;
         }
@@ -559,7 +548,6 @@ class XiaopengServerApplicationTests {
 
     @Test
     public void testMap1() {
-
         ImageCaptchaResourceManager imageCaptchaResourceManager = new DefaultImageCaptchaResourceManager();
         ImageTransform imageTransform = new Base64ImageTransform();
         ImageCaptchaGenerator imageCaptchaGenerator = new MultiImageCaptchaGenerator(imageCaptchaResourceManager, imageTransform).init(true);
@@ -581,5 +569,47 @@ class XiaopengServerApplicationTests {
         Map<String, Object> map = imageCaptchaValidator.generateImageCaptchaValidData(imageCaptchaInfo);
         System.out.println(JSONObject.toJSONString(map));
     }
-
+    @Test
+    public void testDate2122(){
+//        Calendar c1 = Calendar.getInstance();
+//        c1.add(Calendar.MONTH, -8);
+//        String sixMonthsAgo = new SimpleDateFormat("yyyy-MM-01").format(c1.getTime());
+//        // 获取6个月前的日期
+//        Calendar c2 = Calendar.getInstance();
+//        c2.add(Calendar.MONTH, -2);
+//        String currentDate = new SimpleDateFormat("yyyy-MM-01").format(c2.getTime());
+//        System.out.println(sixMonthsAgo);
+//        System.out.println(currentDate);
+//       List<User> users = new ArrayList<User>();
+//        for (int i = 0; i < 100; i++) {
+//            User user = new User();
+//            user.setId(i);
+//            user.setName("小"+i);
+//            if(i%2>0) {
+//                user.setOpenDate(DateUtil.beginOfDay(DateUtil.offsetDay(DateUtil.date(), -100-i)));
+//            }else{
+//                user.setOpenDate(DateUtil.beginOfDay(DateUtil.offsetDay(DateUtil.date(), -100-i-1)));
+//            }
+//            users.add(user);
+//        }
+//        List<User> users = IntStream.range(0, 100)
+//                .mapToObj(i -> {
+//                    User user = new User();
+//                    user.setId(i);
+//                    user.setName("小" + i);
+//                    user.setOpenDate(DateUtil.format(DateUtil.beginOfDay(DateUtil.offsetDay(DateUtil.date(), -100 - i - (i % 2 > 0 ? 0 : 1))),"yyyy-MM-dd"));
+//                    user.setEndDate(DateUtil.format(DateUtil.endOfDay(DateUtil.offsetDay(DateUtil.date(), -100 - i - (i % 2 > 0 ? 0 : 1))),"yyyy-MM-dd"));
+//                    return user;
+//                }).collect(Collectors.toList());
+//        List<User> users1 = new ArrayList<>();
+//        List<List<User>> partition = ListUtil.partition(users1, 200);
+//        System.out.println("==========="+JSONObject.toJSONString(partition));
+//        if(CollectionUtil.isNotEmpty(partition)) {
+//            ForkJoinPool forkJoinPool = new ForkJoinPool(Math.min(partition.size(), 10));
+//            forkJoinPool.submit(() -> partition.parallelStream().forEach(e -> {
+//                System.out.println(JSONObject.toJSONString(e));
+//            })).join();
+//            forkJoinPool.shutdown();
+//        }
+    }
 }

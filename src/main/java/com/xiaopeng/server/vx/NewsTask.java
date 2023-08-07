@@ -42,6 +42,7 @@ public class NewsTask {
 
     @Scheduled(fixedDelay = 120000)
     public void grabBaiduHotNewsJson() {
+        log.info("====================================");
         LogEntity logEntity = new LogEntity();
         logEntity.setContent("热搜爬虫task开始");
         logEntity.setIsSuccess(1);
@@ -65,10 +66,10 @@ public class NewsTask {
                 NewsEntity o = new NewsEntity();
                 o.setTitle(titles.get(i).text().trim());
                 o.setContent(contents.get(i).text().replaceAll("查看更多>", "").trim());
+                log.info(titles.get(i).text().trim()+" : "+contents.get(i).text().replaceAll("查看更多>", "").trim());
                 o.setImg(imgs.get(i).attr("src"));
                 o.setUrl(urls.get(i).attr("href"));
                 list.add(o);
-                log.info(JSONObject.toJSONString(o));
             }
             List<NewsEntity> res = new ArrayList<>();
             list.forEach(e -> {
@@ -86,6 +87,7 @@ public class NewsTask {
             logEntity1.setIsSuccess(1);
             logEntity1.setCreateTime(new Date());
             logService.save(logEntity1);
+            log.info("====================================");
         } catch (IOException e) {
             e.printStackTrace();
         }

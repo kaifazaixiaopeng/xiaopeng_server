@@ -3,6 +3,8 @@ server:
   servlet:
     context-path: /api
 spring:
+  mvc:
+    static-path-pattern=/**:
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
     url: jdbc:mysql://47.106.193.94:3306/app?useUnicode=true&characterEncoding=utf8&useSSL=false
@@ -46,6 +48,7 @@ spring:
     #支持消息的确认与返回
     template:
       mandatory: true
+
 ## mybatis
 ##实现mapper接口配置见mapper和接口的绑定路径
 ##将带有下划线的表字段映射为驼峰格式的实体类属性
