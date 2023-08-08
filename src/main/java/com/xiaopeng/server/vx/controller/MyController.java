@@ -2,30 +2,24 @@ package com.xiaopeng.server.vx.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.xiaopeng.server.vx.config.AutoLog;
-
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
-import org.apache.http.util.EntityUtils;
-import org.bouncycastle.jcajce.provider.asymmetric.rsa.RSAUtil;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.core.Ordered;
+import okhttp3.*;
+import okhttp3.RequestBody;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileInputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import javax.servlet.http.Part;
+import java.io.*;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @ClassName: RestController
@@ -138,7 +132,7 @@ public class MyController {
 
     @ApiOperation("读写robots文件")
     @PostMapping("/updateRobots")
-    public void robotsEdit(@RequestBody JSONObject jsonObject) throws IOException {
+    public void robotsEdit(@org.springframework.web.bind.annotation.RequestBody JSONObject jsonObject) throws IOException {
         //将字符串写进robots.txt文件
         String config = jsonObject.getString("config");
         FileInputStream fileInputStream = new FileInputStream("src/main/resources/static/robots.txt");
@@ -150,4 +144,85 @@ public class MyController {
         fileWriter.close();
     }
 
+//    @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+//    public void uploadFiles(@RequestPart("files") MultipartFile[] files) {
+//        // 处理文件上传逻辑 for (MultipartFile file : files) {
+//        // 可以在这里执行保存文件的操作 }
+//        // return ResponseEntity.ok("文件上传成功"); }
+//
+//    }
+
+    /**
+     * OKHttp3
+     */
+    //文件类型
+    private static final okhttp3.MediaType MEDIA_TYPE_PNG = okhttp3.MediaType.parse("multipart/form-data");
+
+    /**
+     * 这个files看你源文件在哪
+     *
+     * @param files
+     */
+    @ApiOperation("sendMultipart")
+    @PostMapping("/sendMultipart")
+    private void sendMultipart(@RequestParam("files") MultipartFile[] files) {
+        try {
+            OkHttpClient client;
+            client = new OkHttpClient();
+            String jsonStr = "9998889988";
+            MultipartBody.Builder build = new MultipartBody.Builder()
+                    .setType(MultipartBody.FORM);
+            build.addFormDataPart("jsonStr", jsonStr);
+            for (MultipartFile multipartFile : files) {
+                //文件
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                InputStream inputStream  = multipartFile.getInputStream();
+                byte[] b = new byte[2048];
+                int n;
+                while ((n = inputStream.read(b)) != -1) {
+                    outputStream.write(b, 0, n);
+                }
+                build.addFormDataPart("files",//可以搞个file+i
+                        multipartFile.getOriginalFilename(),//具体file名字,可以截取
+                        RequestBody.create(outputStream.toString(), MEDIA_TYPE_PNG));//第一个参数可以是file可以是byte[]可以是String   这里第二个参数是文件类型，是上面的常量，如果你是text类型，那么需要更改
+//                build.addFormDataPart("files",outputStream.toString());
+            }
+            RequestBody requestBody = build.build();
+            Request request = new Request.Builder()
+                    .url("http://192.168.0.184:8080/api/wechart/getFiles")//url请求地址，自己替换
+//                    .addHeader("Content-Type","multipart/form-data")
+                    .post(requestBody)
+                    .build();
+
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+
+                }
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    log.info("异常回调响应:{}", Objects.requireNonNull(response.body()).string());
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 接收
+     * @return
+     */
+    @PostMapping(value = "/getFiles")
+    public void uploadFiles(HttpServletRequest request) {
+        Collection<Part>  files = null;
+        try {
+            files = request.getParts();
+        } catch (IOException | ServletException e) {
+            e.printStackTrace();
+        }
+        String jsonStr = request.getParameter("jsonStr");
+        log.info("files:{}",JSONObject.toJSONString(files));
+        log.info("jsonStr:{}",jsonStr);
+    }
 }
