@@ -182,7 +182,7 @@ public class MyController {
                 while ((n = inputStream.read(b)) != -1) {
                     outputStream.write(b, 0, n);
                 }
-                build.addFormDataPart("files",//可以搞个file+i
+                build.addFormDataPart("files",
                         multipartFile.getOriginalFilename(),//具体file名字,可以截取
                         RequestBody.create(outputStream.toString(), MEDIA_TYPE_PNG));//第一个参数可以是file可以是byte[]可以是String   这里第二个参数是文件类型，是上面的常量，如果你是text类型，那么需要更改
 //                build.addFormDataPart("files",outputStream.toString());
