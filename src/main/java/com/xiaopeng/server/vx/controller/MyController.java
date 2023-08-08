@@ -194,7 +194,16 @@ public class MyController {
                     .post(requestBody)
                     .build();
 
-            client.newCall(request);
+            client.newCall(request).enqueue(new Callback() {
+                @Override
+                public void onFailure(Call call, IOException e) {
+
+                }
+                @Override
+                public void onResponse(Call call, Response response) throws IOException {
+                    log.info("异常回调响应:{}", Objects.requireNonNull(response.body()).string());
+                }
+            });;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -209,6 +218,16 @@ public class MyController {
         Collection<Part>  files = null;
         try {
             files = request.getParts();
+            for (Part file : files) {
+                ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                InputStream inputStream = file.getInputStream();
+                byte[] b = new byte[2048];
+                int n;
+                while ((n = inputStream.read(b)) != -1) {
+                    outputStream.write(b, 0, n);
+                }
+                log.info("info:{}",outputStream.toString());
+            }
         } catch (IOException | ServletException e) {
             e.printStackTrace();
         }
