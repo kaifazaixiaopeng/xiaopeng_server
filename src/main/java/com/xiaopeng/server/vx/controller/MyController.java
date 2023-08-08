@@ -194,16 +194,7 @@ public class MyController {
                     .post(requestBody)
                     .build();
 
-            client.newCall(request).enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-
-                }
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    log.info("异常回调响应:{}", Objects.requireNonNull(response.body()).string());
-                }
-            });
+            client.newCall(request);
         } catch (Exception e) {
             e.printStackTrace();
         }
