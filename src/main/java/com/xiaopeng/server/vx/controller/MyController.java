@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
 import okhttp3.RequestBody;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +21,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ForkJoinPool;
 
 /**
  * @ClassName: RestController
@@ -157,36 +159,52 @@ public class MyController {
      */
     //文件类型
     private static final okhttp3.MediaType MEDIA_TYPE_PNG = okhttp3.MediaType.parse("multipart/form-data");
-
-    /**
-     * 这个files看你源文件在哪
-     *
-     * @param files
-     */
     @ApiOperation("sendMultipart")
     @PostMapping("/sendMultipart")
-    private void sendMultipart(@RequestParam("files") MultipartFile[] files) {
+    private void sendMultipart(HttpServletRequest httpServletRequest) {
         try {
             OkHttpClient client;
             client = new OkHttpClient();
             String jsonStr = "9998889988";
+            Collection<Part> files = httpServletRequest.getParts();
             MultipartBody.Builder build = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM);
             build.addFormDataPart("jsonStr", jsonStr);
-            for (MultipartFile multipartFile : files) {
-                //文件
+            ForkJoinPool forkJoinPool = new ForkJoinPool(Math.min(files.size(), 10));
+            forkJoinPool.submit(() -> files.parallelStream().forEach(multipartFile -> {
                 ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-                InputStream inputStream  = multipartFile.getInputStream();
-                byte[] b = new byte[2048];
-                int n;
-                while ((n = inputStream.read(b)) != -1) {
-                    outputStream.write(b, 0, n);
-                }
-                build.addFormDataPart("files",
-                        multipartFile.getOriginalFilename(),//具体file名字,可以截取
-                        RequestBody.create(outputStream.toString(), MEDIA_TYPE_PNG));//第一个参数可以是file可以是byte[]可以是String   这里第二个参数是文件类型，是上面的常量，如果你是text类型，那么需要更改
+                InputStream inputStream = null;
+                try {
+                    //文件
+                    inputStream = multipartFile.getInputStream();
+                    byte[] b = new byte[2048];
+                    int n;
+                    while ((n = inputStream.read(b)) != -1) {
+                        outputStream.write(b, 0, n);
+                    }
+                    build.addFormDataPart("files",
+                            multipartFile.getName(),//具体file名字,可以截取
+                            RequestBody.create(outputStream.toString(), MEDIA_TYPE_PNG));//第一个参数可以是file可以是byte[]可以是String   这里第二个参数是文件类型，是上面的常量，如果你是text类型，那么需要更改
 //                build.addFormDataPart("files",outputStream.toString());
-            }
+                } catch (Exception e) {
+                    try {
+                        outputStream.close();
+                        assert inputStream != null;
+                        inputStream.close();
+                    }catch (Exception e1){
+                        e1.printStackTrace();
+                    }
+                }finally {
+                    try {
+                        outputStream.close();
+                        assert inputStream != null;
+                        inputStream.close();
+                    }catch (Exception e1){
+                        e1.printStackTrace();
+                    }
+                }
+            })).join();
+            forkJoinPool.shutdown();
             RequestBody requestBody = build.build();
             Request request = new Request.Builder()
                     .url("http://192.168.0.184:8080/api/wechart/getFiles")//url请求地址，自己替换
@@ -196,14 +214,12 @@ public class MyController {
 
             client.newCall(request).enqueue(new Callback() {
                 @Override
-                public void onFailure(Call call, IOException e) {
-
-                }
+                public void onFailure(@NotNull Call call, @NotNull IOException e){}
                 @Override
-                public void onResponse(Call call, Response response) throws IOException {
+                public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
                     log.info("异常回调响应:{}", Objects.requireNonNull(response.body()).string());
                 }
-            });;
+            });
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -211,11 +227,12 @@ public class MyController {
 
     /**
      * 接收
+     *
      * @return
      */
     @PostMapping(value = "/getFiles")
     public void uploadFiles(HttpServletRequest request) {
-        Collection<Part>  files = null;
+        Collection<Part> files = null;
         try {
             files = request.getParts();
             for (Part file : files) {
@@ -226,13 +243,13 @@ public class MyController {
                 while ((n = inputStream.read(b)) != -1) {
                     outputStream.write(b, 0, n);
                 }
-                log.info("info:{}",outputStream.toString());
+                log.info("info:{}", outputStream.toString());
             }
         } catch (IOException | ServletException e) {
             e.printStackTrace();
         }
         String jsonStr = request.getParameter("jsonStr");
-        log.info("files:{}",JSONObject.toJSONString(files));
-        log.info("jsonStr:{}",jsonStr);
+        log.info("files:{}", JSONObject.toJSONString(files));
+        log.info("jsonStr:{}", jsonStr);
     }
 }
