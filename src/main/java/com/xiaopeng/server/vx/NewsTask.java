@@ -40,7 +40,7 @@ public class NewsTask {
     @Autowired
     private LogService logService;
 
-    @Scheduled(fixedDelay = 120000)
+    @Scheduled(fixedDelay = 300000)
     public void grabBaiduHotNewsJson() {
         log.info("====================================");
         LogEntity logEntity = new LogEntity();

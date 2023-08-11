@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -23,21 +24,16 @@ public class RabbitMqConfig {
      * 交换机名称
      */
     public static final String AMQ_TOPIC = "amq.topic";
-    public static final String DELAYED_TOPIC = "delayed.topic";
+
     /**
      * 队列名称 队列需要与交换机绑定
      */
     public static final String MY_QUEUE = "my_queue";
-
-    /**
-     * 延迟队列名称
-     */
-    public static final String DELAYED_QUEUE="delayed_queue";
     /**
      * 路由key
      */
     public static final String ROUTING_KEY="my_routing_key";
-    public static final String DELAYED_KEY="delayed_key";
+
 
 
     /**
@@ -103,6 +99,48 @@ public class RabbitMqConfig {
 //        return BindingBuilder.bind(chatPluginQueue()).to(chatPluginDirect()).with(ROUTING_KEY).noargs();
 //    }
     /**
+     * 延迟队列
+     */
+    //队列
+    public static final String DELAYED_QUEUE_NAME = "delayed_queue";
+
+    //交换机
+    public static final String DELAYED_EXCHANGE_NAME = "DELAYED_EXCHANGE";
+
+    //路由key
+    public static final String DELAYED_ROUTING_KEY = "delayed";
+
+    //声明延迟队列
+    @Bean
+    public Queue delayedQueue() {
+        return new Queue(DELAYED_QUEUE_NAME);
+    }
+
+    //声明延迟交换机
+    @Bean
+    public CustomExchange delayedExchange() {
+        Map<String, Object> arguments = new HashMap<>(3);
+        //设置延迟类型
+        arguments.put("x-delayed-type","direct");
+        /**
+         * 声明自定义交换机
+         * 第一个参数：交换机的名称
+         * 第二个参数：交换机的类型
+         * 第三个参数：是否需要持久化
+         * 第四个参数：是否自动删除
+         * 第五个参数：其他参数
+         */
+        return new CustomExchange(DELAYED_EXCHANGE_NAME ,"x-delayed-message",true,false,arguments);
+    }
+
+    //绑定队列和延迟交换机
+    @Bean
+    public Binding delayedQueueBindingDelayedExchange(@Qualifier("delayedQueue") Queue delayedQueue,
+                                                      @Qualifier("delayedExchange") Exchange delayedExchange) {
+        return BindingBuilder.bind(delayedQueue).to(delayedExchange).with(DELAYED_ROUTING_KEY).noargs();
+    }
+
+    /**
      * 将自定义的RabbitTemplate对象注入bean容器
      *
      * @param connectionFactory
@@ -122,13 +160,13 @@ public class RabbitMqConfig {
             log.info("返回原因：{}", cause);
         });
         //设置ReturnCallback回调
-        rabbitTemplate.setReturnCallback((message, replyCode, replyText, exchange, routingKey) -> {
-            log.info("发送消息：{}", JSONUtil.toJsonStr(message));
-            log.info("结果状态码：{}", replyCode);
-            log.info("结果状态信息：{}", replyText);
-            log.info("交换机：{}", exchange);
-            log.info("路由key：{}", routingKey);
-        });
+//        rabbitTemplate.setReturnCallback((message, replyCode, replyText, exchange, routingKey) -> {
+//            log.info("发送消息：{}", JSONUtil.toJsonStr(message));
+//            log.info("结果状态码：{}", replyCode);
+//            log.info("结果状态信息：{}", replyText);
+//            log.info("交换机：{}", exchange);
+//            log.info("路由key：{}", routingKey);
+//        });
         return rabbitTemplate;
     }
 }

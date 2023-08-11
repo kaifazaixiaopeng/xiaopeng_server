@@ -500,19 +500,23 @@ class XiaopengServerApplicationTests {
         /**
          *
          */
-        JSONObject jsonObject = new JSONObject();
-        jsonObject.put("news", "id");
-        Object news = jsonObject.get("news");
-        System.out.println(JSONObject.toJSONString(news));
+//        JSONObject jsonObject = new JSONObject();
+//        jsonObject.put("news", "id");
+//        Object news = jsonObject.get("news");
+//        System.out.println(JSONObject.toJSONString(news));
+
+        String s = "123";
+        Integer integer = Integer.valueOf(s);
+        System.out.println(integer);
     }
 
     @Test
     public void dnf() {
-        BigDecimal count = BigDecimal.valueOf(368 * 2 + 368 * 0.7+398*0.9*4+398*0.7);
+        BigDecimal count = BigDecimal.valueOf(368 * 2 + 368 * 0.7);
         System.out.println(count);
         BigDecimal s = count.multiply(BigDecimal.valueOf(1000000 / 1.88));
         System.out.println(s.setScale(0, BigDecimal.ROUND_UP));
-        System.out.println(4000000 * 150 + (10000000) * 8*5);
+        System.out.println(4000000 * 40 + (10000000) * 8*5);
         int i = 28+24+4+3+8+8+20+3+4+6+6+4+5+3;
         int mingw=42902+350+350+700+350;
         System.out.println("花花：" + i);

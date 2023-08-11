@@ -5,12 +5,10 @@ import com.xiaopeng.server.vx.config.AutoLog;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
-import okhttp3.*;
 import okhttp3.RequestBody;
+import okhttp3.*;
 import org.jetbrains.annotations.NotNull;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +18,6 @@ import java.io.*;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ForkJoinPool;
 
 /**
@@ -252,4 +249,7 @@ public class MyController {
         log.info("files:{}", JSONObject.toJSONString(files));
         log.info("jsonStr:{}", jsonStr);
     }
+
+
+
 }

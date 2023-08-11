@@ -37,8 +37,8 @@ public class XiaopengServerApplication implements WebMvcConfigurer {
                 "Local: \t\thttp://localhost:{}\n\t" +
                 "External: \thttp://{}:{}\n\t" +
                 "Swagger-UI: http://{}:{}{}/doc.html\n" +
-                "\t---xiaopeng_server started successfully\n" +
-                "\t---小鹏的服务启动成功---\n" +
+                "\tServer started successfully\n" +
+                "\t小鹏的服务启动成功---\n" +
                 "==========================================================",
                 env.getProperty("server.port"),
                 InetAddress.getLocalHost().getHostAddress(),
