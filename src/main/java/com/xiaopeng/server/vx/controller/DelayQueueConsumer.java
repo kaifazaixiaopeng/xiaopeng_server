@@ -1,5 +1,6 @@
 package com.xiaopeng.server.vx.controller;
 
+import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaopeng.server.vx.config.RabbitMqConfig;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,6 @@ public class DelayQueueConsumer {
     @RabbitHandler
     private void receiveDelayQueue(JSONObject message) {
 
-        log.info("当前时间{}，收到延迟队列的消息:{}", new Date(), message);
+        log.info("当前时间{}，收到延迟队列的消息:{}", DateUtil.now(), message);
     }
 }

@@ -1,5 +1,6 @@
 package com.xiaopeng.server.vx.controller;
 
+import cn.hutool.core.date.DateUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaopeng.server.vx.config.RabbitMqConfig;
 import io.swagger.annotations.Api;
@@ -35,7 +36,7 @@ public class DelayedQueueController {
     @GetMapping("/sendMsg")
     @ApiOperation("发送消息--带message")
     public Boolean sendMsg(@RequestParam("message") String message) {
-        log.info("当前时间：{}，发送一条消息给两个TTL队列：{}", new Date(), message);
+        log.info("当前时间：{}，发送一条消息给两个TTL队列：{}", DateUtil.now(), message);
         JSONObject s = new JSONObject();
         s.put("消息来着ttl为10s的队列",message);
         JSONObject s1 = new JSONObject();
@@ -49,7 +50,7 @@ public class DelayedQueueController {
         rabbitTemplate.convertAndSend(RabbitMqConfig.DELAYED_EXCHANGE_NAME, RabbitMqConfig.DELAYED_ROUTING_KEY, s1,
                 message1 -> {
                     //给消息设置延迟毫秒值
-                    message1.getMessageProperties().setHeader("x-delay", 40000);
+                    message1.getMessageProperties().setHeader("x-delay", 20000);
                     return message1;
                 });
         return true;
