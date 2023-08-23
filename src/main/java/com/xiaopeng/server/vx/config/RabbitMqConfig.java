@@ -122,13 +122,13 @@ public class RabbitMqConfig {
         Map<String, Object> arguments = new HashMap<>(3);
         //设置延迟类型
         arguments.put("x-delayed-type","direct");
-        /**
-         * 声明自定义交换机
-         * 第一个参数：交换机的名称
-         * 第二个参数：交换机的类型
-         * 第三个参数：是否需要持久化
-         * 第四个参数：是否自动删除
-         * 第五个参数：其他参数
+        /*
+          声明自定义交换机
+          第一个参数：交换机的名称
+          第二个参数：交换机的类型
+          第三个参数：是否需要持久化
+          第四个参数：是否自动删除
+          第五个参数：其他参数
          */
         return new CustomExchange(DELAYED_EXCHANGE_NAME ,"x-delayed-message",true,false,arguments);
     }
@@ -142,9 +142,6 @@ public class RabbitMqConfig {
 
     /**
      * 将自定义的RabbitTemplate对象注入bean容器
-     *
-     * @param connectionFactory
-     * @return
      */
     @Bean
     public RabbitTemplate createRabbitTemplate(ConnectionFactory connectionFactory) {
@@ -159,14 +156,15 @@ public class RabbitMqConfig {
             log.info("确认结果：{}", ack);
             log.info("返回原因：{}", cause);
         });
-        //设置ReturnCallback回调
-//        rabbitTemplate.setReturnCallback((message, replyCode, replyText, exchange, routingKey) -> {
-//            log.info("发送消息：{}", JSONUtil.toJsonStr(message));
-//            log.info("结果状态码：{}", replyCode);
-//            log.info("结果状态信息：{}", replyText);
-//            log.info("交换机：{}", exchange);
-//            log.info("路由key：{}", routingKey);
-//        });
+        //消息发送到交换机，但是没有到队列
+//        设置ReturnCallback回调
+        rabbitTemplate.setReturnCallback((message, replyCode, replyText, exchange, routingKey) -> {
+            log.info("发送消息：{}", JSONUtil.toJsonStr(message));
+            log.info("结果状态码：{}", replyCode);
+            log.info("结果状态信息：{}", replyText);
+            log.info("交换机：{}", exchange);
+            log.info("路由key：{}", routingKey);
+        });
         return rabbitTemplate;
     }
 }

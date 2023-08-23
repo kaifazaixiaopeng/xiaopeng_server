@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @ClassName: DelatQueueConsumer
@@ -33,24 +34,31 @@ public class DelayedQueueController {
     @Autowired(required = false)
     private RabbitTemplate rabbitTemplate;
 
+    /**
+     * 对消息本身进行设置，ttl设置过期时间
+     * @param message
+     * @return
+     */
     @GetMapping("/sendMsg")
     @ApiOperation("发送消息--带message")
     public Boolean sendMsg(@RequestParam("message") String message) {
         log.info("当前时间：{}，发送一条消息给两个TTL队列：{}", DateUtil.now(), message);
+//        long delay = TimeUnit.DAYS.toMillis(7);
         JSONObject s = new JSONObject();
         s.put("消息来着ttl为10s的队列",message);
         JSONObject s1 = new JSONObject();
-        s1.put("消息来着ttl为40s的队列",message);
+        s1.put("消息来着ttl为s的队列",message);
         rabbitTemplate.convertAndSend(RabbitMqConfig.DELAYED_EXCHANGE_NAME, RabbitMqConfig.DELAYED_ROUTING_KEY, s,
                 message1 -> {
                     //给消息设置延迟毫秒值
                     message1.getMessageProperties().setHeader("x-delay", 10000);
                     return message1;
                 });
+
         rabbitTemplate.convertAndSend(RabbitMqConfig.DELAYED_EXCHANGE_NAME, RabbitMqConfig.DELAYED_ROUTING_KEY, s1,
                 message1 -> {
                     //给消息设置延迟毫秒值
-                    message1.getMessageProperties().setHeader("x-delay", 20000);
+                    message1.getMessageProperties().setHeader("x-delay", 60000);
                     return message1;
                 });
         return true;
@@ -59,8 +67,11 @@ public class DelayedQueueController {
     @GetMapping("/sendExpirationMsg")
     @ApiOperation("发送消息--带message和ttlTime")
     public void sendMsg(@RequestParam("message") String message, @RequestParam("ttlTime") String ttlTime) {
-        log.info("当前时间：{}，发送一条时长{}毫秒的TTL消息给normal03队列：{}", new Date(), ttlTime, message);
-        rabbitTemplate.convertAndSend(RabbitMqConfig.DELAYED_EXCHANGE_NAME, RabbitMqConfig.DELAYED_ROUTING_KEY, message, msg -> {
+        log.info("当前时间：{}，发送一条时长{}毫秒的TTL消息给normal03队列：{}", DateUtil.now(), ttlTime, message);
+        JSONObject s = new JSONObject();
+        s.put("message",message);
+        s.put("ttlTime",ttlTime);
+        rabbitTemplate.convertAndSend(RabbitMqConfig.DELAYED_EXCHANGE_NAME, RabbitMqConfig.DELAYED_ROUTING_KEY, s, msg -> {
             //发送消息的时候延迟时长
             msg.getMessageProperties().setExpiration(ttlTime);
             return msg;
@@ -76,7 +87,7 @@ public class DelayedQueueController {
     @GetMapping("/sendDelayMsg")
     @ApiOperation("发送消息--带message和delayTime")
     public void sendMsg(@RequestParam("message") String message, @RequestParam("delayTime") Integer delayTime) {
-        log.info("当前时间：{}，发送一条时长{}毫秒的消息给延迟队列：{}", new Date(), delayTime, message);
+        log.info("当前时间：{}，发送一条时长{}毫秒的消息给延迟队列：{}", DateUtil.now(), delayTime, message);
         rabbitTemplate.convertAndSend(RabbitMqConfig.DELAYED_QUEUE_NAME, RabbitMqConfig.DELAYED_ROUTING_KEY, message, msg -> {
             //发送消息的时候延迟时长
             msg.getMessageProperties().setDelay(delayTime);

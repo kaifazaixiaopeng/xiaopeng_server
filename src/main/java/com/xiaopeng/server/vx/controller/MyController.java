@@ -1,5 +1,6 @@
 package com.xiaopeng.server.vx.controller;
 
+import cn.hutool.http.HttpRequest;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaopeng.server.vx.config.AutoLog;
 import io.swagger.annotations.Api;
@@ -203,6 +204,7 @@ public class MyController {
             })).join();
             forkJoinPool.shutdown();
             RequestBody requestBody = build.build();
+            HttpRequest.post("http://192.168.0.184:8080/api/wechart/getFiles").execute();
             Request request = new Request.Builder()
                     .url("http://192.168.0.184:8080/api/wechart/getFiles")//url请求地址，自己替换
 //                    .addHeader("Content-Type","multipart/form-data")

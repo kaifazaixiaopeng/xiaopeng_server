@@ -11,6 +11,7 @@ import org.springframework.web.servlet.LocaleResolver;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Locale;
+import java.util.Objects;
 
 /**
  * @Auto:BUGPeng
@@ -29,7 +30,7 @@ public class I18nUtil {
 
     private HttpServletRequest getRequest() {
         try {
-            return ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
+            return ((ServletRequestAttributes) Objects.requireNonNull(RequestContextHolder.getRequestAttributes())).getRequest();
         } catch (Exception e) {
             log.info("没有获取到HttpServletRequest");
             return null;

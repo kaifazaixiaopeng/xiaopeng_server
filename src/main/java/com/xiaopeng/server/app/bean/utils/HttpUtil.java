@@ -37,10 +37,10 @@ public class HttpUtil {
 
     private static final String CODE = "CODE";
     private static final String MSG = "MSG";
-    private Map<String, String> resultMap = new HashMap<>();
+    private final Map<String, String> resultMap = new HashMap<>();
     /**
      * 通用，http get请求
-     * @param url
+     * @param url 请求地址
      * @return
      */
     public Map<String, String> sendByGet(String url) {
@@ -274,10 +274,10 @@ public class HttpUtil {
     private SSLConnectionSocketFactory buildSSLSocketFactory() throws Exception {
         SSLContext sslContext = SSLContext.getInstance("SSL");
         // 设置信任证书（绕过TrustStore验证）
-        sslContext.init(null, new TrustManager[] { new AuthX509TrustManager() }, null);
+        sslContext.init(null, new TrustManager[] {new AuthX509TrustManager()}, null);
         HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
 
-        SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext,
+        return new SSLConnectionSocketFactory(sslContext,
                 new String[] { "TLSv1" }, null, new HostnameVerifier() {
             // hostname,默认返回true,不验证hostname
             @Override
@@ -285,10 +285,9 @@ public class HttpUtil {
                 return true;
             }
         });
-        return sslConnectionSocketFactory;
     }
 
-    private class AuthX509TrustManager implements TrustManager, X509TrustManager {
+    private static class AuthX509TrustManager implements TrustManager, X509TrustManager {
         public X509Certificate[] getAcceptedIssuers() {
             return null;
         }
@@ -365,10 +364,10 @@ public class HttpUtil {
     private SSLConnectionSocketFactory gansuTLS() throws Exception {
         SSLContext sslContext = SSLContext.getInstance("SSL");
         // 设置信任证书（绕过TrustStore验证）
-        sslContext.init(null, new TrustManager[] { new AuthX509TrustManager() }, null);
+        sslContext.init(null, new TrustManager[] {new AuthX509TrustManager()}, null);
         HttpsURLConnection.setDefaultSSLSocketFactory(sslContext.getSocketFactory());
 
-        SSLConnectionSocketFactory sslConnectionSocketFactory = new SSLConnectionSocketFactory(sslContext,
+        return new SSLConnectionSocketFactory(sslContext,
                 new String[] { "TLSv1.2" }, null, new HostnameVerifier() {
             // hostname,默认返回true,不验证hostname
             @Override
@@ -376,6 +375,5 @@ public class HttpUtil {
                 return true;
             }
         });
-        return sslConnectionSocketFactory;
     }
 }

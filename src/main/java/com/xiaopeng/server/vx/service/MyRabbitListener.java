@@ -1,6 +1,5 @@
 package com.xiaopeng.server.vx.service;
 
-import com.alibaba.fastjson.JSONObject;
 import com.rabbitmq.client.Channel;
 import com.xiaopeng.server.vx.config.RabbitMqConfig;
 import lombok.extern.slf4j.Slf4j;
@@ -9,8 +8,6 @@ import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
-
-import java.util.concurrent.locks.ReentrantLock;
 
 /**
  * @ClassName: RabbitListener
@@ -35,9 +32,9 @@ public class MyRabbitListener {
 
     /**
      * 手动ack  -----      #将配置文件ack配置更改为acknowledge-mode: MANUAL
-     * @param weather
-     * @param message
-     * @param channel
+     * @param weather --天气
+     * @param message --队列消息
+     * @param channel --频道
      */
     @RabbitHandler
     public void getMyRabbitListenerMessage(@Payload String weather, Message message, Channel channel) {

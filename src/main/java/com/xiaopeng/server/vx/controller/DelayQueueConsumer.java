@@ -23,7 +23,6 @@ import java.util.Date;
 public class DelayQueueConsumer {
     @RabbitHandler
     private void receiveDelayQueue(JSONObject message) {
-
         log.info("当前时间{}，收到延迟队列的消息:{}", DateUtil.now(), message);
     }
 }

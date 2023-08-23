@@ -7,10 +7,8 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.xiaopeng.server.app.bean.utils.HttpUtil;
 import com.xiaopeng.server.vx.entity.DayOFCommemoration;
-import com.xiaopeng.server.vx.entity.LogEntity;
 import com.xiaopeng.server.vx.entity.WeatherEntity;
 import com.xiaopeng.server.vx.service.DayOFCommemorationService;
-import com.xiaopeng.server.vx.service.LogService;
 import com.xiaopeng.server.vx.service.WeatherService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -46,8 +44,8 @@ import java.util.stream.Collectors;
 @RestController
 public class TimedTask {
 
-    @Autowired
-    private LogService logService;
+//    @Autowired
+//    private LogService logService;
     @Autowired
     private WeatherService weatherService;
     private final String key = "e8155303fe134b5ca279eb049cf03138";
@@ -181,11 +179,11 @@ public class TimedTask {
 
     @Scheduled(fixedDelay = 6000000)
     private void weatherTask() {
-        LogEntity logEntity = new LogEntity();
-        logEntity.setContent("Mq同步天气开始");
-        logEntity.setCreateTime(new Date());
+//        LogEntity logEntity = new LogEntity();
+//        logEntity.setContent("Mq同步天气开始");
+//        logEntity.setCreateTime(new Date());
         log.info("Mq同步天气开始");
-        logService.save(logEntity);
+//        logService.save(logEntity);
         try {
             String city = getCity();
             JSONObject js = JSONObject.parseObject(city);
@@ -247,37 +245,35 @@ public class TimedTask {
                     weatherService.updateBatchById(updateList);
                 }
             }
-            LogEntity logEntity1 = new LogEntity();
-            logEntity1.setContent("Mq同步天气结束");
-            logEntity1.setCreateTime(new Date());
+//            LogEntity logEntity1 = new LogEntity();
+//            logEntity1.setContent("Mq同步天气结束");
+//            logEntity1.setCreateTime(new Date());
             log.info("Mq同步天气结束");
-            logService.save(logEntity1);
+//            logService.save(logEntity1);
             log.info(weather);
         } catch (Exception e) {
-            LogEntity logEntity1 = new LogEntity();
-            logEntity1.setContent("Mq同步天气异常结束"+e.getMessage());
-            logEntity1.setIsSuccess(2);
-            logEntity1.setCreateTime(new Date());
+//            LogEntity logEntity1 = new LogEntity();
+//            logEntity1.setContent("Mq同步天气异常结束"+e.getMessage());
+//            logEntity1.setIsSuccess(2);
+//            logEntity1.setCreateTime(new Date());
             log.info("Mq同步天气异常结束");
-            logService.save(logEntity1);
+//            logService.save(logEntity1);
         }
 
     }
     /**
      * 城市搜索
-     *
-     * @return
      */
     public String getCity() {
         StringBuilder msg = new StringBuilder();
         //https://geoapi.qweather.com/v2/city/lookup?location=beij&key=YOUR_KEY
         JSONObject city = httpUtil.reqByGet("https://geoapi.qweather.com/v2/city/lookup?location=jiujiang&key=" + key);
         if (ObjectUtil.isEmpty(city)) {
-            LogEntity errorLog = new LogEntity();
-            errorLog.setCreateTime(new Date());
-            errorLog.setContent("获取城市信息失败");
+//            LogEntity errorLog = new LogEntity();
+//            errorLog.setCreateTime(new Date());
+//            errorLog.setContent("获取城市信息失败");
             log.info("获取城市信息失败");
-            logService.save(errorLog);
+//            logService.save(errorLog);
         }
         JSONObject data = JSONObject.parseObject(city.getString("MSG"));
         JSONArray location = data.getJSONArray("location");
@@ -288,8 +284,8 @@ public class TimedTask {
     /**
      * 天气
      *
-     * @param id
-     * @return
+     * @param id --id
+     * @return --天气字符串
      */
     public String getWeather(String id) {
         StringBuilder msg = new StringBuilder();
@@ -297,14 +293,14 @@ public class TimedTask {
         String url = "https://devapi.qweather.com/v7/weather/7d?location=" + id + "&key=" + key;
         JSONObject res = httpUtil.reqByGet(url);
         if (ObjectUtil.isEmpty(res)) {
-            LogEntity errorLog = new LogEntity();
-            errorLog.setCreateTime(new Date());
-            errorLog.setContent("获取天气信息异常");
+//            LogEntity errorLog = new LogEntity();
+//            errorLog.setCreateTime(new Date());
+//            errorLog.setContent("获取天气信息异常");
             log.info("获取天气信息异常");
-            logService.save(errorLog);
+//            logService.save(errorLog);
         }
         msg.append(res.getString("MSG"));
-        msg.toString().replaceAll("\\\\", "");
+        String s = msg.toString().replaceAll("\\\\", "");
         log.info(msg.toString());
         return msg.toString();
     }
@@ -338,9 +334,9 @@ public class TimedTask {
         JSONObject post = httpUtil.sendpost(url, msg);
         log.info("发送模板消息{}", msg);
         log.info("收到回复{}", post);
-        LogEntity logEntity = new LogEntity();
-        logEntity.setIsSuccess(1);
-        logEntity.setContent(JSONObject.toJSONString(post));
+//        LogEntity logEntity = new LogEntity();
+//        logEntity.setIsSuccess(1);
+//        logEntity.setContent(JSONObject.toJSONString(post));
     }
 
 

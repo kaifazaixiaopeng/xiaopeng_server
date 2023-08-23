@@ -1,28 +1,21 @@
 package com.xiaopeng.server.vx;
 
-import com.alibaba.fastjson.JSONObject;
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.xiaopeng.server.vx.entity.LogEntity;
 import com.xiaopeng.server.vx.entity.NewsEntity;
-import com.xiaopeng.server.vx.service.LogService;
 import com.xiaopeng.server.vx.service.NewsService;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * @ClassName: News
@@ -37,17 +30,17 @@ public class NewsTask {
     @Autowired
     private NewsService newsService;
 
-    @Autowired
-    private LogService logService;
+//    @Autowired
+//    private LogService logService;
 
     @Scheduled(fixedDelay = 300000)
     public void grabBaiduHotNewsJson() {
         log.info("====================================");
-        LogEntity logEntity = new LogEntity();
-        logEntity.setContent("热搜爬虫task开始");
-        logEntity.setIsSuccess(1);
-        logEntity.setCreateTime(new Date());
-        logService.save(logEntity);
+//        LogEntity logEntity = new LogEntity();
+//        logEntity.setContent("热搜爬虫task开始");
+//        logEntity.setIsSuccess(1);
+//        logEntity.setCreateTime(new Date());
+//        logService.save(logEntity);
         String url = "https://top.baidu.com/board?tab=realtime&sa=fyb_realtime_31065";
         List<NewsEntity> list = new ArrayList<>();
         try {
@@ -75,18 +68,18 @@ public class NewsTask {
             list.forEach(e -> {
                 LambdaQueryWrapper<NewsEntity> newsEntityQueryWrapper = new LambdaQueryWrapper<>();
                 newsEntityQueryWrapper.eq(NewsEntity::getTitle, e.getTitle());
-                int count = newsService.count(newsEntityQueryWrapper);
-                if (count == 0) {
+                NewsEntity one = newsService.getOne(newsEntityQueryWrapper);
+                if (ObjectUtil.isEmpty(one)) {
                     res.add(e);
                 }
             });
 
             newsService.saveBatch(res);
-            LogEntity logEntity1 = new LogEntity();
-            logEntity1.setContent("热搜爬虫task结束");
-            logEntity1.setIsSuccess(1);
-            logEntity1.setCreateTime(new Date());
-            logService.save(logEntity1);
+//            LogEntity logEntity1 = new LogEntity();
+//            logEntity1.setContent("热搜爬虫task结束");
+//            logEntity1.setIsSuccess(1);
+//            logEntity1.setCreateTime(new Date());
+//            logService.save(logEntity1);
             log.info("====================================");
         } catch (IOException e) {
             e.printStackTrace();

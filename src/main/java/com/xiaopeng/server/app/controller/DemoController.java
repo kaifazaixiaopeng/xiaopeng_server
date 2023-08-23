@@ -51,8 +51,7 @@ public class DemoController {
 
     @GetMapping("/bio")
     public File getCSVFile() {
-        File file = new File("test.txt");
-        return file;
+        return new File("test.txt");
     }
 
     @GetMapping("/getAllData")
@@ -138,7 +137,9 @@ public class DemoController {
             e.printStackTrace();
         } finally {
             try {
+                assert in != null;
                 in.close();
+                assert out != null;
                 out.close();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -324,7 +325,7 @@ public class DemoController {
                 for (int i = 0; i < chars.length; i++) {
                     char aChar = chars[i];
                     char bChar = chars1[i];
-                    flag=String.valueOf(aChar).equals(String.valueOf(bChar))?true:false;
+                    flag= String.valueOf(aChar).equals(String.valueOf(bChar));
                 }
             }
         }else{

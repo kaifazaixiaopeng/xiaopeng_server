@@ -14,7 +14,7 @@ import java.util.concurrent.locks.ReentrantLock;
  * @Remark:
  */
 public class JvmCache {
-    private  static  volatile List list=new ArrayList<Integer>();
+    private  static final List<Integer> list=new ArrayList<>();
     private static final ReentrantLock lock=new ReentrantLock();
     public static void main(String[] args) {
         try {

@@ -54,8 +54,8 @@ public class JDBCUtil {
             System.out.println("正在打开数据库连接....");
 
             connection = DriverManager.getConnection(
-                    "jdbc:mysql://124.221.225.23:3306/test?useUnicode=true&characterEncoding=utf8&useSSL=false",
-                    "root", "root"
+                    "jdbc:mysql://47.106.193.94:3306/app?useUnicode=true&characterEncoding=utf8&useSSL=false",
+                    "root", "wzp123"
             );
 
             System.out.println("Connection valid: " + connection.isValid(5));

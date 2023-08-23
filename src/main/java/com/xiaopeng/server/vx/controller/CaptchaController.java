@@ -21,12 +21,14 @@ import cloud.tianai.captcha.validator.common.model.dto.ImageCaptchaTrack;
 import cloud.tianai.captcha.validator.impl.BasicCaptchaTrackValidator;
 import cn.hutool.captcha.CaptchaUtil;
 import cn.hutool.captcha.LineCaptcha;
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.map.MapUtil;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.wf.captcha.SpecCaptcha;
 import com.xiaopeng.server.app.bean.common.ResultBean;
 import com.xiaopeng.server.vx.entity.ImageCaptchaTrackDto;
+import com.xiaopeng.server.vx.vo.ImageCaptchaInfoVo;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -116,17 +118,38 @@ public class CaptchaController {
         return "success";
     }
     public static final Float tolerant=0.02f;
+    private static final String externaUrl="http://1.202.26.70:9000/";
     @PostMapping("/huadongCap")
     @ApiOperation("滑动验证码")
-    public ImageCaptchaInfo huadongCap(){
+    public ImageCaptchaInfoVo getslideCaptcha() {
         ImageCaptchaResourceManager imageCaptchaResourceManager = new DefaultImageCaptchaResourceManager();
+        /**
+         * 自定义图片的话，需要添加远程资源或者内置资源图片
+         */
         ResourceStore resourceStore = imageCaptchaResourceManager.getResourceStore();
-//        resourceStore.addResource(CaptchaTypeConstant.SLIDER, new Resource(ClassPathResourceProvider.NAME, "tmp/aa.png"));
-        // 添加远程url图片资源
-//        resourceStore.addResource(CaptchaTypeConstant.SLIDER,new Resource(URLResourceProvider.NAME, "http://www.xx.com/aa.jpg"));
-//        ResourceMap template1 = new ResourceMap("default", 4);
-//        template1.put(SliderCaptchaConstant.TEMPLATE_ACTIVE_IMAGE_NAME, new Resource(ClassPathResourceProvider.NAME, "tmp/aa.png"));
-//        template1.put(SliderCaptchaConstant.TEMPLATE_FIXED_IMAGE_NAME, new Resource(ClassPathResourceProvider.NAME, "tmp/aa.png"));
+        resourceStore.addResource(CaptchaTypeConstant.SLIDER,new cloud.tianai.captcha.resource.common.model.dto.Resource(URLResourceProvider.NAME, externaUrl+"baiiinfo-app-service/appCaptchaTemplate/1.jpg"));
+        resourceStore.addResource(CaptchaTypeConstant.SLIDER,new cloud.tianai.captcha.resource.common.model.dto.Resource(URLResourceProvider.NAME, externaUrl+"baiiinfo-app-service/appCaptchaTemplate/2.jpg"));
+        resourceStore.addResource(CaptchaTypeConstant.SLIDER,new cloud.tianai.captcha.resource.common.model.dto.Resource(URLResourceProvider.NAME, externaUrl+"baiiinfo-app-service/appCaptchaTemplate/3.jpg"));
+        resourceStore.addResource(CaptchaTypeConstant.SLIDER,new cloud.tianai.captcha.resource.common.model.dto.Resource(URLResourceProvider.NAME, externaUrl+"baiiinfo-app-service/appCaptchaTemplate/4.jpg"));
+        resourceStore.addResource(CaptchaTypeConstant.SLIDER,new cloud.tianai.captcha.resource.common.model.dto.Resource(URLResourceProvider.NAME, externaUrl+"baiiinfo-app-service/appCaptchaTemplate/5.jpg"));
+        ResourceMap template1 = new ResourceMap("default1", 1);
+        template1.put(SliderCaptchaConstant.TEMPLATE_ACTIVE_IMAGE_NAME, new cloud.tianai.captcha.resource.common.model.dto.Resource(URLResourceProvider.NAME, externaUrl+"baiiinfo-app-service/appCaptchaTemplate/active.png"));
+        template1.put(SliderCaptchaConstant.TEMPLATE_FIXED_IMAGE_NAME, new cloud.tianai.captcha.resource.common.model.dto.Resource(URLResourceProvider.NAME, externaUrl+"baiiinfo-app-service/appCaptchaTemplate/fixed.png"));
+        template1.put(SliderCaptchaConstant.TEMPLATE_MASK_IMAGE_NAME, new cloud.tianai.captcha.resource.common.model.dto.Resource(URLResourceProvider.NAME, externaUrl+"baiiinfo-app-service/appCaptchaTemplate/matrix.png"));
+        resourceStore.addTemplate(CaptchaTypeConstant.SLIDER, template1);
+
+        ResourceMap template2 = new ResourceMap("default2", 2);
+        template2.put(SliderCaptchaConstant.TEMPLATE_ACTIVE_IMAGE_NAME, new cloud.tianai.captcha.resource.common.model.dto.Resource(URLResourceProvider.NAME, externaUrl+"baiiinfo-app-service/appCaptchaTemplate/active1.png"));
+        template2.put(SliderCaptchaConstant.TEMPLATE_FIXED_IMAGE_NAME, new cloud.tianai.captcha.resource.common.model.dto.Resource(URLResourceProvider.NAME, externaUrl+"baiiinfo-app-service/appCaptchaTemplate/fixed1.png"));
+        template2.put(SliderCaptchaConstant.TEMPLATE_MASK_IMAGE_NAME, new cloud.tianai.captcha.resource.common.model.dto.Resource(URLResourceProvider.NAME, externaUrl+"baiiinfo-app-service/appCaptchaTemplate/matrix1.png"));
+        resourceStore.addTemplate(CaptchaTypeConstant.SLIDER, template2);
+//        resourceStore.addResource(CaptchaTypeConstant.SLIDER, new cloud.tianai.captcha.resource.common.model.dto.Resource(ClassPathResourceProvider.NAME, "tmp/aa.png"));
+//         添加远程url图片资源
+        //        resourceStore.addResource(CaptchaTypeConstant.SLIDER,new cloud.tianai.captcha.resource.common.model.dto.Resource(URLResourceProvider.NAME, "http://www.xx.com/aa.jpg"));
+        /**
+         * 传递y轴，隐藏x轴
+         */
+        ImageCaptchaInfoVo imageCaptchaInfoVo = new ImageCaptchaInfoVo();
         ImageTransform imageTransform = new Base64ImageTransform();
         ImageCaptchaGenerator imageCaptchaGenerator = new MultiImageCaptchaGenerator(imageCaptchaResourceManager, imageTransform).init(true);
         ImageCaptchaInfo imageCaptchaInfo = imageCaptchaGenerator.generateCaptchaImage(CaptchaTypeConstant.SLIDER);
@@ -136,48 +159,45 @@ public class CaptchaController {
         Integer x = parse.getInteger("x");
         Integer y = parse.getInteger("y");
         Map<String, Object> map = imageCaptchaValidator.generateImageCaptchaValidData(imageCaptchaInfo);
-        map.put("randomX",imageCaptchaInfo.getRandomX());
-        map.put("imageX",x);
+        map.put("imageX",imageCaptchaInfo.getRandomX());
         map.put("imageY",y);
-        redisTemplate.opsForValue().set("xiaopeng:server:" + map.get("type")+"-"+ map.get("percentage")+"-"+map.get("randomX"), JSONObject.toJSONString(map), 10L, TimeUnit.MINUTES);
-        System.out.println(JSONObject.toJSONString(map));
-        System.out.println(JSONObject.toJSONString(imageCaptchaInfo));
-        return imageCaptchaInfo;
+        BeanUtil.copyProperties(imageCaptchaInfo,imageCaptchaInfoVo);
+        String uuid = UUID.randomUUID().toString();
+        imageCaptchaInfoVo.setRandomX(uuid);
+        redisTemplate.opsForValue().set("xiaopeng-server"  +  tolerant+"-"+ map.get("type")+"-"+ uuid, JSONObject.toJSONString(map), 5L, TimeUnit.MINUTES);
+        return imageCaptchaInfoVo;
     }
-    @PostMapping("/authCap")
-    @ApiOperation("滑动验证码校验")
-    public Boolean authCap(@RequestBody ImageCaptchaTrackDto dto) {
+    @PostMapping("/authPhoneCaptcha")
+    @ApiOperation("校验滑动验证码")
+    public Boolean authPhoneCaptcha(ImageCaptchaTrackDto dto){
+        String uuid = dto.getRandomX();
+        String type = dto.getType();
+        Float tolerantF = dto.getTolerant();
+        String s = redisTemplate.opsForValue().get("xiaopeng-server" + tolerantF +"-"+ type+"-"+ uuid);
+        if(StringUtils.isBlank(s)){
+            return false;
+        }
+        Map<String, Object> map = JSONObject.parseObject(s);
+        int x = (Integer) map.get("imageX");
+        int y = (Integer) map.get("imageY");
         BasicCaptchaTrackValidator sliderCaptchaValidator = new BasicCaptchaTrackValidator();
-        Map<String, Object> map ;
-
         ImageCaptchaInfo imageCaptchaInfo = new ImageCaptchaInfo();
         imageCaptchaInfo.setTolerant(tolerant);
         imageCaptchaInfo.setType(dto.getType());
-        imageCaptchaInfo.setRandomX(dto.getRandomX());
+        imageCaptchaInfo.setRandomX(x);
         imageCaptchaInfo.setBackgroundImageWidth(dto.getBackgroundImageWidth());
         imageCaptchaInfo.setBackgroundImageHeight(dto.getBackgroundImageHeight());
         imageCaptchaInfo.setTemplateImageWidth(dto.getTemplateImageWidth());
         imageCaptchaInfo.setBackgroundImageHeight(dto.getBackgroundImageHeight());
         ImageCaptchaValidator imageCaptchaValidator = new BasicCaptchaTrackValidator();
         Map<String, Object> map1 = imageCaptchaValidator.generateImageCaptchaValidData(imageCaptchaInfo);
-        map1.put("randomX",dto.getRandomX());
-        String s = redisTemplate.opsForValue().get("xiaopeng:server:" + map1.get("type")+"-"+ map1.get("percentage")+"-"+map1.get("randomX"));
-        if(StringUtils.isBlank(s)){
-            return false;
-        }
-        map= JSONObject.parseObject(s);
-        int i = (Integer) map.get("imageX") +  (Integer)map.get("imageY") - (dto.getTargetX() + dto.getTargetY());
-        //像素点不能大于小于2个像素点
-        boolean check2= i <= 2 && i >= -2;
-        Float percentage =Float.parseFloat( map.get("percentage").toString());
+        Float percentage =Float.parseFloat( map1.get("percentage").toString());
         Float newPercentage =Float.parseFloat( map1.get("percentage").toString());
-        /*
-          newPercentage :用户传的偏移量百分比数据---使用generateImageCaptchValidData方法计算获得
-          percentage :生成滑块的百分比数据---使用generateImageCaptchValidData方法计算获得
-          tolerant :偏移量，最多误差值，超过该误差值算验证失败
-         */
-        boolean check1 = sliderCaptchaValidator.checkPercentage(newPercentage, percentage,tolerant);
-        redisTemplate.delete("xiaopeng:server:"+  map.get("tolerant")+ map.get("type")+ map.get("percentage"));
-        return check1 && check2;
+
+        int i = x + y - (dto.getTargetX() + dto.getTargetY());
+        boolean check1= i <= 4 && i >= -4;
+        boolean check2 = sliderCaptchaValidator.checkPercentage(newPercentage, percentage, tolerant);
+        redisTemplate.delete("xiaopeng-server"  + tolerantF +"-"+ type+"-"+ uuid);
+        return check1&&check2;
     }
 }

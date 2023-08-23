@@ -10,16 +10,20 @@ import cloud.tianai.captcha.resource.ImageCaptchaResourceManager;
 import cloud.tianai.captcha.resource.impl.DefaultImageCaptchaResourceManager;
 import cloud.tianai.captcha.validator.ImageCaptchaValidator;
 import cloud.tianai.captcha.validator.impl.BasicCaptchaTrackValidator;
+import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.StringUtils;
 import com.xiaopeng.server.app.bean.common.SimpleDate;
 import com.xiaopeng.server.app.bean.pojo.User;
 import com.xiaopeng.server.app.bean.utils.CloneUtils;
 import com.xiaopeng.server.vx.NewsTask;
+import com.xiaopeng.server.vx.entity.WeatherEntity;
+import com.xiaopeng.server.vx.service.WeatherService;
 import groovy.util.logging.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
@@ -29,6 +33,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import javax.xml.crypto.Data;
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
@@ -103,6 +108,7 @@ class XiaopengServerApplicationTests {
                 users2.add(user2);
             }
         }
+        System.out.println(JSONObject.toJSONString(users2));
         System.out.println(new Date().getTime());
     }
 
@@ -120,12 +126,7 @@ class XiaopengServerApplicationTests {
 //                log.info(SimpleDate.getDefaultDate(new Date()));
 //            }
 //        }.start();
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                System.out.println(SimpleDate.getDefaultDate(new Date()));
-            }
-        }).start();
+        new Thread(() -> System.out.println(SimpleDate.getDefaultDate(new Date()))).start();
         System.out.println(1111);
     }
 
@@ -135,30 +136,22 @@ class XiaopengServerApplicationTests {
      * @param list
      * @param param 排序字段
      * @param <T>
-     * @throws IntrospectionException
      */
-    public static final <T> void ObjSort(List<T> list, String param) throws IntrospectionException {
-        Collections.sort(list, new Comparator<T>() {
-            @Override
-            public int compare(T o1, T o2) {
-                Class<?> type = o1.getClass();
-                PropertyDescriptor descriptor1 = null;
-                try {
-                    descriptor1 = new PropertyDescriptor(param, type);
-                    Method readMethod1 = descriptor1.getReadMethod();
+    public static final <T> void ObjSort(List<T> list, String param) {
+        Collections.sort(list, (o1, o2) -> {
+            Class<?> type = o1.getClass();
+            PropertyDescriptor descriptor1;
+            try {
+                descriptor1 = new PropertyDescriptor(param, type);
+                Method readMethod1 = descriptor1.getReadMethod();
 
-                    PropertyDescriptor descriptor2 = new PropertyDescriptor(param, type);
-                    Method readMethod2 = descriptor2.getReadMethod();
-                    return readMethod1.invoke(o1).toString().compareTo(readMethod2.invoke(o2).toString());
-                } catch (IntrospectionException e) {
-                    e.printStackTrace();
-                } catch (IllegalAccessException e) {
-                    e.printStackTrace();
-                } catch (InvocationTargetException e) {
-                    e.printStackTrace();
-                }
-                return -1;
+                PropertyDescriptor descriptor2 = new PropertyDescriptor(param, type);
+                Method readMethod2 = descriptor2.getReadMethod();
+                return readMethod1.invoke(o1).toString().compareTo(readMethod2.invoke(o2).toString());
+            } catch (IntrospectionException | InvocationTargetException | IllegalAccessException e) {
+                e.printStackTrace();
             }
+            return -1;
         });
     }
 
@@ -185,35 +178,26 @@ class XiaopengServerApplicationTests {
         System.out.println(JSONObject.toJSONString(users));
     }
 
-    private volatile List<Integer> list = new ArrayList<>();
+    private final List<Integer> list = new ArrayList<>();
 
     @Test
     public void volatileTest() {
 
-        new Thread() {
-            @Override
-            public void run() {
-                for (int i = 0; i < 10; i++) {
-                    list.add(1);
-                }
+        new Thread(() -> {
+            for (int i = 0; i < 10; i++) {
+                list.add(1);
             }
-        }.start();
-        new Thread() {
-            @Override
-            public void run() {
-                for (int i = 0; i < 10; i++) {
-                    list.add(2);
-                }
+        }).start();
+        new Thread(() -> {
+            for (int i = 0; i < 10; i++) {
+                list.add(2);
             }
-        }.start();
-        new Thread() {
-            @Override
-            public void run() {
-                for (int i = 0; i < 10; i++) {
-                    list.add(3);
-                }
+        }).start();
+        new Thread(() -> {
+            for (int i = 0; i < 10; i++) {
+                list.add(3);
             }
-        }.start();
+        }).start();
         System.out.println(JSONObject.toJSONString(list));
     }
 
@@ -307,9 +291,7 @@ class XiaopengServerApplicationTests {
         String[] split = s.split(",");
         List<String> categoryIdList = new ArrayList<String>(split.length);
         Collections.addAll(categoryIdList, split);
-        List<Integer> proIds = categoryIdList.stream().map(e -> {
-            return Integer.valueOf(e);
-        }).collect(Collectors.toList());
+        List<Integer> proIds = categoryIdList.stream().map(Integer::valueOf).collect(Collectors.toList());
         System.out.println(JSONObject.toJSONString(proIds));
     }
 
@@ -392,8 +374,7 @@ class XiaopengServerApplicationTests {
         WeekFields weekFields = WeekFields.of(DayOfWeek.SATURDAY, 3);
         LocalDate now = LocalDate.now();
         LocalDate localDate = now.withYear(year).with(weekFields.weekOfYear(), week);
-        LocalDate goalLocalDate = localDate.with(weekFields.dayOfWeek(), newValue);
-        return goalLocalDate;
+        return localDate.with(weekFields.dayOfWeek(), newValue);
     }
 
     @Test
@@ -453,7 +434,7 @@ class XiaopengServerApplicationTests {
 //        }
 //        System.out.println("1====>"+JSONObject.toJSONString(srcList));
 
-        Pattern pua = Pattern.compile("src=\\\"(.*?)\\\"");
+        Pattern pua = Pattern.compile("src=\"(.*?)\"");
         Matcher mat = pua.matcher(input);
 
         List<String> srcList = new ArrayList<>();
@@ -509,19 +490,38 @@ class XiaopengServerApplicationTests {
         Integer integer = Integer.valueOf(s);
         System.out.println(integer);
     }
-
+    @Autowired
+    private WeatherService weatherService;
+    @Test
+    public void getXiaopengTianqi(){
+        Date date = new Date();
+        String format = DateUtil.format(DateUtil.tomorrow(), "yyyy-MM-dd");
+        System.out.println(format);
+        int year = DateUtil.year(date);
+        int month = DateUtil.month(date) + 1;
+        int day = DateUtil.dayOfMonth(date);
+        LambdaQueryWrapper<WeatherEntity> query = new LambdaQueryWrapper<>();
+        query.eq(WeatherEntity::getFxDate,format);
+        WeatherEntity one = weatherService.getOne(query);
+        System.out.println(JSONObject.toJSONString(one));
+        System.out.println(year);
+        System.out.println(month);
+        System.out.println(day);
+        String s ="尊敬的用户您好，今天是"+year+"年"+month+"月"+day+"日,小鹏为您带来明日天气预报,明日"+one.getTextDay()+",最高气温"+one.getTempMax()+"℃,最低气温"+one.getTempMin()+"℃,"+one.getWindDirDay()+",风速"+one.getWindSpeedDay()+"级";
+        System.out.println(s);
+    }
     @Test
     public void dnf() {
         BigDecimal count = BigDecimal.valueOf(368 * 2 + 368 * 0.7);
         System.out.println(count);
-        BigDecimal s = count.multiply(BigDecimal.valueOf(1000000 / 1.88));
+        BigDecimal s = count.multiply(BigDecimal.valueOf(1000000 / 184));
         System.out.println(s.setScale(0, BigDecimal.ROUND_UP));
         System.out.println(4000000 * 40 + (10000000) * 8*5);
         int i = 28+24+4+3+8+8+20+3+4+6+6+4+5+3;
         int mingw=42902+350+350+700+350;
+        System.out.println("============>>>>"+150000000/1000000*2.00);
         System.out.println("花花：" + i);
         System.out.println("花花：" + mingw);
-        System.out.println(1000000/1.88);
     }
 
     @Test
@@ -538,6 +538,12 @@ class XiaopengServerApplicationTests {
     public void testMap() {
         //判断字符串是否为数字类型
         System.out.println(isNumber("73.278"));
+        System.out.println(isNumber("73,278"));
+        Date date = new Date();
+        String startTime = DateUtil.format(DateUtil.offsetMonth(DateUtil.beginOfMonth(DateUtil.date()), -6), "yyyy-MM-dd HH:mm:ss");
+        String endTime = DateUtil.format(DateUtil.endOfMonth(DateUtil.date()), "yyyy-MM-dd HH:mm:ss");
+        System.out.println(startTime);
+        System.out.println(endTime);
     }
     boolean isNumber(String str) {
         if (StringUtils.isBlank(str)) {
@@ -545,6 +551,7 @@ class XiaopengServerApplicationTests {
         }
         String reg = "^-?[0-9]+(\\.[0-9]+)?$";
         return str.matches(reg);
+
     }
 
     @Value("${wechatConfig.appSecret}")

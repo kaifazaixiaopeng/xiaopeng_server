@@ -121,16 +121,16 @@ public class FtpUtils {
      */
     public List<String> listFiles(String directory, String ftpHost, int ftpPort, String ftpUserName, String ftpPassword) throws SftpException {
         ChannelSftp sftp = connect(ftpHost, ftpPort, ftpUserName, ftpPassword);
-        List fileNameList = new ArrayList();
+        List<String> fileNameList = new ArrayList<>();
         try {
             sftp.cd(directory);
         } catch (SftpException e) {
             return fileNameList;
         }
         Vector vector = sftp.ls(directory);
-        for (int i = 0; i < vector.size(); i++) {
-            if (vector.get(i) instanceof ChannelSftp.LsEntry) {
-                ChannelSftp.LsEntry lsEntry = (ChannelSftp.LsEntry) vector.get(i);
+        for (Object o : vector) {
+            if (o instanceof ChannelSftp.LsEntry) {
+                ChannelSftp.LsEntry lsEntry = (ChannelSftp.LsEntry) o;
                 String fileName = lsEntry.getFilename();
                 if (".".equals(fileName) || "..".equals(fileName)) {
                     continue;

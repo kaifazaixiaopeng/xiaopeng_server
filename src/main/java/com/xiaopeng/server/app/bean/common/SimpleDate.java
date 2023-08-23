@@ -15,9 +15,9 @@ public class SimpleDate {
      *    小写hh 12小时制
      */
     private static final String DEFAULT_DATE="yyyy-MM-dd HH:mm:ss";
-    private static SimpleDateFormat format;
+
     public static String getDefaultDate(Date date){
-        format = new SimpleDateFormat(DEFAULT_DATE);
+        SimpleDateFormat format = new SimpleDateFormat(DEFAULT_DATE);
         return format.format(date);
     }
 }
