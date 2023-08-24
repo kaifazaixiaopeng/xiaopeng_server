@@ -6,6 +6,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.xiaopeng.server.app.bean.utils.HttpUtil;
+import com.xiaopeng.server.vx.entity.Message;
 import com.xiaopeng.server.vx.entity.NewsEntity;
 import com.xiaopeng.server.vx.entity.WeatherEntity;
 import com.xiaopeng.server.vx.service.NewsService;
@@ -19,6 +20,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.Scheduled;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -111,6 +113,7 @@ public class NewsTask {
      */
     @Scheduled(cron = "0 30 19 * ? 1")
     public void sendWeather(){
+
         JSONObject jsonObject = new JSONObject();
         String userid="";
         String pwd="";
@@ -124,6 +127,45 @@ public class NewsTask {
         jsonObject.put("content",content);
         httpUtil.sendByPost(sendUrl,JSONObject.toJSONString(jsonObject));
     }
+    /**
+     * 相同内容群发
+     *
+     * @description
+     * @param message
+     *        参数对象
+     * @param msgId
+     *        返回值为0，则msgId有值。返回值非0，则msgId为空的字符串。字符串为"手机号码,custId,网关流水号"
+     * @return 0:成功 非0:返回错误代码
+     */
+//    public int batchSend(Message message, StringBuffer msgId) {
+//        try {
+//            // 对短信内容进行编码 urlencode（GBK明文）
+//            message.setContent(URLEncodeUtil.encode(message.getContent(), Charset.forName("GBK")));
+//            String Message = null;
+//            StringBuffer messageBuffer = new StringBuffer("");
+//            // 短连接相同内容群发
+//            sendSmsByNotKeepAlive("batch_send", message, messageBuffer);
+//            // returnInt为0,代表提交成功;returnInt不为0，代表提交失败
+//            if(returnInt == 0) {
+//                // 提交成功
+//                Message = messageBuffer.toString();
+//                Long rMsgid = null;
+//                String rCustid = "";
+//                // 处理返回结果
+//                if(!"".equals(Message.trim())) {
+//                    // 解析JSON
+//                    JSONObject parseObject = (JSONObject) JSONValue.parse(Message);
+//                }
+//            } else {
+//                return returnInt;
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        return returnInt;
+//    }
+
+
     @Autowired
     private WeatherService weatherService;
     public String getContent() {
