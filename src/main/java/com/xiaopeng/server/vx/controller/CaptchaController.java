@@ -151,12 +151,11 @@ public class CaptchaController {
          */
         ImageCaptchaInfoVo imageCaptchaInfoVo = new ImageCaptchaInfoVo();
         ImageTransform imageTransform = new Base64ImageTransform();
-        ImageCaptchaGenerator imageCaptchaGenerator = new MultiImageCaptchaGenerator(imageCaptchaResourceManager, imageTransform).init(true);
+        ImageCaptchaGenerator imageCaptchaGenerator = new MultiImageCaptchaGenerator(imageCaptchaResourceManager, imageTransform).init(false);
         ImageCaptchaInfo imageCaptchaInfo = imageCaptchaGenerator.generateCaptchaImage(CaptchaTypeConstant.SLIDER);
         imageCaptchaInfo.setTolerant(tolerant);
         ImageCaptchaValidator imageCaptchaValidator = new BasicCaptchaTrackValidator();
         JSONObject parse = JSONObject.parseObject(JSONObject.toJSONString(imageCaptchaInfo));
-        Integer x = parse.getInteger("x");
         Integer y = parse.getInteger("y");
         Map<String, Object> map = imageCaptchaValidator.generateImageCaptchaValidData(imageCaptchaInfo);
         map.put("imageX",imageCaptchaInfo.getRandomX());

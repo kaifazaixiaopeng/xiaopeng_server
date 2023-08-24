@@ -12,6 +12,7 @@ import cloud.tianai.captcha.validator.ImageCaptchaValidator;
 import cloud.tianai.captcha.validator.impl.BasicCaptchaTrackValidator;
 import cn.hutool.core.date.DateTime;
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.net.URLEncodeUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.json.JSONUtil;
 import com.alibaba.fastjson.JSONArray;
@@ -126,8 +127,12 @@ class XiaopengServerApplicationTests {
 //                log.info(SimpleDate.getDefaultDate(new Date()));
 //            }
 //        }.start();
-        new Thread(() -> System.out.println(SimpleDate.getDefaultDate(new Date()))).start();
-        System.out.println(1111);
+//        new Thread(() -> System.out.println(SimpleDate.getDefaultDate(new Date()))).start();
+//        System.out.println(1111);
+//
+        String s ="噶几嘎婆";
+        String encode = URLEncodeUtil.encode(s);
+        System.out.println(encode);
     }
 
     /**
