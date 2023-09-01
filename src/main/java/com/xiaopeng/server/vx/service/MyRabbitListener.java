@@ -33,14 +33,14 @@ public class MyRabbitListener {
     /**
      * 手动ack  -----      #将配置文件ack配置更改为acknowledge-mode: MANUAL
      * @param weather --天气
-     * @param message --队列消息
-     * @param channel --频道
+//     * @param message --队列消息
+//     * @param channel --频道
      */
     @RabbitHandler
-    public void getMyRabbitListenerMessage(@Payload String weather, Message message, Channel channel) {
+    public void getMyRabbitListenerMessage(@Payload String weather) {
         try {
 //            TimeUnit.SECONDS.sleep(4);
-            channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
+//            channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -26,6 +26,7 @@ import com.xiaopeng.server.vx.NewsTask;
 import com.xiaopeng.server.vx.entity.WeatherEntity;
 import com.xiaopeng.server.vx.service.WeatherService;
 import groovy.util.logging.Slf4j;
+import org.jsoup.internal.StringUtil;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -491,9 +493,18 @@ class XiaopengServerApplicationTests {
 //        Object news = jsonObject.get("news");
 //        System.out.println(JSONObject.toJSONString(news));
 
-        String s = "123";
-        Integer integer = Integer.valueOf(s);
-        System.out.println(integer);
+//        String s = "123";
+//        Integer integer = Integer.valueOf(s);
+//        System.out.println(integer);
+//        String s=",11,";
+//        String[] split = s.split(",");
+//        for (int i = 0; i < split.length; i++) {
+//            System.out.println(split[i]);
+//        }
+//        System.out.println(JSONObject.toJSONString(split));
+//        List<String> strings = Arrays.asList(split);
+//        List<String> collect = strings.stream().filter(StringUtils::isNotBlank).collect(Collectors.toList());
+//        System.out.println(JSONObject.toJSONString(collect));
     }
     @Autowired
     private WeatherService weatherService;
@@ -517,7 +528,7 @@ class XiaopengServerApplicationTests {
     }
     @Test
     public void dnf() {
-        BigDecimal count = BigDecimal.valueOf(368 * 2 + 368 * 0.7);
+        BigDecimal count = BigDecimal.valueOf(338 + 338 * 0.7);
         System.out.println(count);
         BigDecimal s = count.multiply(BigDecimal.valueOf(1000000 / 184));
         System.out.println(s.setScale(0, BigDecimal.ROUND_UP));
