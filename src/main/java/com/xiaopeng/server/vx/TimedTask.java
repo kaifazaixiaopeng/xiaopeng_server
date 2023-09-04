@@ -163,6 +163,9 @@ public class TimedTask {
 
     }
 
+    /**
+     * 纪念日
+     */
     @Scheduled(fixedDelay = 6000000)
     private void day_of_commemoration() {
         // 指定日期
